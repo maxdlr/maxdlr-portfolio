@@ -1,5 +1,7 @@
+
 ###> symfony/framework-bundle ###
 /.env.local
+/.env.test
 /.env.local.php
 /.env.*.local
 /config/secrets/prod/prod.decrypt.private.php
@@ -7,19 +9,19 @@
 /var/
 /vendor/
 ###< symfony/framework-bundle ###
-
-###> phpunit/phpunit ###
-/phpunit.xml
-.phpunit.result.cache
-###< phpunit/phpunit ###
+/.idea
+/.idea/
 
 ###> symfony/phpunit-bridge ###
 .phpunit.result.cache
 /phpunit.xml
+.phpunit.cache/
 ###< symfony/phpunit-bridge ###
+
 ###> symfony/webpack-encore-bundle ###
 /node_modules/
 /public/build/
 npm-debug.log
 yarn-error.log
 ###< symfony/webpack-encore-bundle ###
+composer.lock
