@@ -4,6 +4,7 @@ import SocialLink from "../component/SocialLink.vue";
 const props = defineProps({
   socialLinks: {type: Object, required: true}
 });
+
 </script>
 
 <template>
@@ -21,5 +22,7 @@ const props = defineProps({
         class="mx-2"
     />
   </div>
+
+  <div class="gh-calendar"></div>
 
 </template>

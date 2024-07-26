@@ -8,6 +8,15 @@ import './bootstrap.js';
  */
 import './styles/app.scss';
 
-console.log('This log comes from assets/app.js - welcome to AssetMapper! 🎉');
+// document.addEventListener('vue:before-mount', (event) => {
+//     const {
+//         componentName, // The Vue component's name
+//         component, // The resolved Vue component
+//         props, // The props that will be injected to the component
+//         app, // The Vue application instance
+//     } = event.detail;
+//
+//     app.use();
+// });
 
 registerVueControllerComponents(require.context('./vue/controllers', true, /\.vue$/));

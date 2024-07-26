@@ -33,8 +33,6 @@
     "@vueuse/components": "^10.11.0",
     "@vueuse/core": "^10.9.0",
     "bootstrap": "^5.3.3",
-    "bootstrap-icons": "^1.11.3",
-    "date-fns": "^3.6.0",
-    "github-calendar": "^2.3.4"
+    "bootstrap-icons": "^1.11.3"
   }
 }
