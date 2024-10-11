@@ -3,7 +3,7 @@ import { GithubCommit } from "./GithubFetchTypes.ts";
 import { OctokitResponse } from "@octokit/types";
 
 const octokit = new Octokit({
-  auth: import.meta.env.GITHUB_TOKEN,
+  auth: import.meta.env.VITE_GITHUB_TOKEN,
 });
 
 const getRepos = async () => {
@@ -14,7 +14,6 @@ const getRepos = async () => {
         return null;
       }
     });
-
   return response.data;
 };
 

@@ -2,17 +2,17 @@
 import { onMounted, Ref, ref } from "vue";
 import {
   getAllCommitsFromRepo,
-  getOrganizations,
   getRepos,
 } from "../composables/github/GithubFetchService.ts";
+import { getMonthName } from "../composables/utils/utils.ts";
 
-const buildYear = () => {
-  let year = [];
+const buildCommitData = () => {
+  let commitData = [];
 
   for (const yearNumber of [2023, 2024]) {
     for (let i = 1; i <= 12; i++) {
       for (let y = 1; y <= 31; y++) {
-        year.push({
+        commitData.push({
           day: y,
           month: i,
           year: yearNumber,
@@ -21,31 +21,33 @@ const buildYear = () => {
       }
     }
   }
-  return year;
+
+  console.log(commitData.value);
+  return commitData;
 };
 
 const allCommitDates: Ref<{ day: number; month: number; year: number }[]> = ref(
   [],
 );
-const year: Ref<
+const commitData: Ref<
   { day: number; month: number; year: number; commitCount: number }[]
-> = ref(buildYear());
+> = ref(buildCommitData());
 
 const getCommitCount = () => {
   for (const allCommitDatesKey in allCommitDates.value) {
     const commitDate = allCommitDates.value[allCommitDatesKey];
-    for (const yearKey in year.value) {
-      const date = year.value[yearKey];
+    for (const key in commitData.value) {
+      const date = commitData.value[key];
       if (
-        commitDate.day === date.day &&
-        commitDate.month === date.month &&
-        commitDate.year === date.year
+        commitDate.day === date?.day &&
+        commitDate.month === date?.month &&
+        commitDate.year === date?.year
       ) {
         date.commitCount++;
       }
     }
   }
-  console.log(year.value);
+  localStorage.setItem("commitData", JSON.stringify(commitData.value));
 };
 
 const getAllCommits = async () => {
@@ -69,7 +71,6 @@ const getAllCommits = async () => {
 };
 
 onMounted(async () => {
-  console.log(await getOrganizations());
   await getAllCommits();
   getCommitCount();
 });
@@ -77,7 +78,8 @@ onMounted(async () => {
 
 <template>
   <div v-for="month in 12" class="flex">
-    <div v-for="(day, index) in year" :key="index" :id="`day-${index}`">
+    {{ getMonthName(month) }}
+    <div v-for="(day, index) in commitData" :key="index" :id="`day-${index}`">
       <div v-if="day.month === month">
         <div class="w-[13px] h-[13px] m-1 text-center">
           {{ day.commitCount }}
