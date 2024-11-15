@@ -23,7 +23,7 @@
   },
   "footer-wip": {
     "gif": {
-      "path": "../src/assets/MaxOrbe-example.gif",
+      "path": "/current-project.gif",
       "size": "100"
     },
     "url": "https://github.com/maxdlr/MaxOrbe"
