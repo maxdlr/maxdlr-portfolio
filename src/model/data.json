@@ -1,0 +1,31 @@
+{
+  "author": {
+    "name": "Maxime de la Rocheterie",
+    "email": "contact@maxdlr.com"
+  },
+  "work-links": {
+    "developer": {
+      "name": "Dev",
+      "url": "https://www.github.com/maxdlr"
+    },
+    "motion-designer": {
+      "name": "Motion",
+      "url": "https://motion.maxdlr.com"
+    }
+  },
+  "social-links": {
+    "github": "https://www.github.com/maxdlr",
+    "instagram": "https://www.instagram.com/maxdlr_",
+    "linkedin": "https://www.linkedin.com/in/maximedlr/",
+    "behance": "https://www.behance.net/qimonotv",
+    "dribbble": "https://www.dribbble.com/qimono",
+    "vimeo": "https://www.vimeo.com/maxdlr"
+  },
+  "footer-wip": {
+    "gif": {
+      "path": "/current-project.gif",
+      "size": "100"
+    },
+    "url": "https://github.com/maxdlr/MaxOrbe"
+  }
+}
