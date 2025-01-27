@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { onMounted, ref } from "vue";
+import { onMounted, Ref, ref } from "vue";
 import ArticleCard from "../molecule/ArticleCard.vue";
 
 const token = import.meta.env.VITE_DOCS_TOKEN;
@@ -8,7 +8,14 @@ const collectionId = import.meta.env.VITE_DOCS_COLLECTIONID;
 const docsBaseUrl = import.meta.env.VITE_DOCS_BASE_API_URL;
 
 const isLoading = ref(false);
-const articles = ref([]);
+const articles: Ref<
+  {
+    id: string;
+    url: string;
+    template: boolean;
+    parentDocumentId: string | null;
+  }[]
+> = ref([]);
 
 const getArticles = async () => {
   isLoading.value = true;
@@ -24,11 +31,18 @@ const getArticles = async () => {
     }),
   });
   const { data } = await response.json();
-  articles.value = data.filter((doc) => {
-    const isNotTemplate: boolean = !doc.template;
-    const isArticle: boolean = !!doc.parentDocumentId;
-    return isNotTemplate && isArticle;
-  });
+  articles.value = data.filter(
+    (doc: {
+      id: string;
+      url: string;
+      template: boolean;
+      parentDocumentId: string | null;
+    }) => {
+      const isNotTemplate: boolean = !doc.template;
+      const isArticle: boolean = !!doc.parentDocumentId;
+      return isNotTemplate && isArticle;
+    },
+  );
   isLoading.value = false;
 };
 
