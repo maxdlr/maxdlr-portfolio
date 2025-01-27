@@ -19,7 +19,7 @@ defineProps({
   <div class="inline">
     <a
       v-if="url"
-      :class="`uk-button uk-button-${variant} ${extraClass}`"
+      :class="`uk-button uk-button-${variant} ${extraClass} hover:bg-gray-900 hover:text-white transition-all active:bg-gray-600`"
       :href="url"
       target="_blank"
     >

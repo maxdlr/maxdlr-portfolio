@@ -16,6 +16,7 @@
     "bootstrap-icons-vue": "^1.11.3",
     "franken-ui": "^1.1.0",
     "lodash": "^4.17.21",
+    "marked": "^15.0.6",
     "octokit": "^4.0.2",
     "postcss-combine-duplicated-selectors": "^10.0.3",
     "postcss-sort-media-queries": "^5.2.0",
