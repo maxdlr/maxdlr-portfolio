@@ -30,7 +30,13 @@ const getArticles = async () => {
       collectionId: collectionId,
     }),
   });
-  const { data } = await response.json();
+  const { data, error } = await response.json();
+
+  if (error) {
+    isLoading.value = false;
+    throw error;
+  }
+
   articles.value = data.filter(
     (doc: {
       id: string;
