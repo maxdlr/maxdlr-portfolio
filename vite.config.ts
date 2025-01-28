@@ -7,8 +7,8 @@ export default defineConfig({
     proxy: {
       "/api": {
         target: "https://docs.maxdlr.com",
-        changeOrigin: true, // Rewrite the origin of the request to the target URL
-        secure: true, // Disable SSL verification if the target uses a self-signed certificate
+        changeOrigin: true,
+        secure: true,
       },
     },
   },

@@ -5,6 +5,7 @@ import ArticleCard from "../molecule/ArticleCard.vue";
 const token = import.meta.env.VITE_DOCS_TOKEN;
 const shareId = import.meta.env.VITE_DOCS_SHAREID;
 const collectionId = import.meta.env.VITE_DOCS_COLLECTIONID;
+const docsBaseUrl = import.meta.env.VITE_DOCS_BASE_API_URL;
 
 const isLoading = ref(false);
 const articles: Ref<
@@ -18,7 +19,7 @@ const articles: Ref<
 
 const getArticles = async () => {
   isLoading.value = true;
-  const response = await fetch(`/api/documents.list`, {
+  const response = await fetch(`${docsBaseUrl}/documents.list`, {
     method: "POST",
     headers: {
       Accept: "application/json",
