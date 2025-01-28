@@ -1,10 +1,11 @@
 <script setup lang="ts">
-import { onMounted, ref } from "vue";
+import { onMounted, PropType, ref } from "vue";
 import { formatDate } from "@vueuse/core";
+import { BlogArticle } from "../../interface/BlogArticle.ts";
 
 const props = defineProps({
   article: {
-    type: Object,
+    type: {} as PropType<BlogArticle>,
     required: true,
   },
 });

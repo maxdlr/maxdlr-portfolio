@@ -1,54 +1,17 @@
 <script setup lang="ts">
 import { onMounted, Ref, ref } from "vue";
 import ArticleCard from "../molecule/ArticleCard.vue";
+import { BlogService } from "../../composables/BlogService.ts";
+import { BlogArticle } from "../../interface/BlogArticle.ts";
 
-const token = import.meta.env.VITE_DOCS_TOKEN;
-const shareId = import.meta.env.VITE_DOCS_SHAREID;
-const collectionId = import.meta.env.VITE_DOCS_COLLECTIONID;
-const docsBaseUrl = import.meta.env.VITE_DOCS_BASE_API_URL;
+const blogArticlesUrl = import.meta.env.VITE_BLOG_ARTICLES_URL;
 
 const isLoading = ref(false);
-const articles: Ref<
-  {
-    id: string;
-    url: string;
-    template: boolean;
-    parentDocumentId: string | null;
-  }[]
-> = ref([]);
+const articles: Ref<BlogArticle[]> = ref([]);
 
 const getArticles = async () => {
   isLoading.value = true;
-  const response = await fetch(`${docsBaseUrl}/documents.list`, {
-    method: "POST",
-    headers: {
-      Accept: "application/json",
-      Authorization: `Bearer ${token}`,
-      "Content-Type": "application/json",
-    },
-    body: JSON.stringify({
-      collectionId: collectionId,
-    }),
-  });
-  const { data, error } = await response.json();
-
-  if (error) {
-    isLoading.value = false;
-    throw error;
-  }
-
-  articles.value = data.filter(
-    (doc: {
-      id: string;
-      url: string;
-      template: boolean;
-      parentDocumentId: string | null;
-    }) => {
-      const isNotTemplate: boolean = !doc.template;
-      const isArticle: boolean = !!doc.parentDocumentId;
-      return isNotTemplate && isArticle;
-    },
-  );
+  articles.value = await BlogService.getArticles();
   isLoading.value = false;
 };
 
@@ -92,10 +55,7 @@ onMounted(async () => {
       :key="article.id"
       class="w-[50%] max-md:w-full mb-3"
     >
-      <a
-        :href="'https://docs.maxdlr.com/s/' + shareId + article.url"
-        target="_blank"
-      >
+      <a :href="blogArticlesUrl + article.url" target="_blank">
         <ArticleCard :article="article" />
       </a>
     </div>
