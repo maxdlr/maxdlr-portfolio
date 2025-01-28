@@ -76,6 +76,10 @@ onMounted(async () => {
       </div>
     </div>
 
+    <div v-else-if="articles.length === 0">
+      {{ $t("no-articles") }}
+    </div>
+
     <div
       v-else
       v-for="article in articles"
