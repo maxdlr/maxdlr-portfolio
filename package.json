@@ -20,8 +20,9 @@
     "octokit": "^4.0.2",
     "postcss-combine-duplicated-selectors": "^10.0.3",
     "postcss-sort-media-queries": "^5.2.0",
+    "undici": "^7.3.0",
     "vue": "^3.5.10",
-    "vue-i18n": "10"
+    "vue-i18n": "10.0.5"
   },
   "devDependencies": {
     "@eslint/js": "^9.14.0",
