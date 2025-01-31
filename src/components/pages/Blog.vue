@@ -15,21 +15,15 @@ const getArticles = async () => {
   isLoading.value = false;
 };
 
-const refresh = async () => {
-  await getArticles();
-};
-onMounted(async () => {
-  await refresh();
-});
+const refresh = async () => await getArticles();
+onMounted(async () => await refresh());
 </script>
 
 <template>
   <hr class="uk-divider-icon" />
-
   <p class="text-sm italic text-gray-800 text-center py-4">
     {{ $t("blog-title") }}
   </p>
-
   <section
     class="flex flex-col items-center justify-center container mx-auto px-4 mb-10"
   >
@@ -45,7 +39,7 @@ onMounted(async () => {
       </div>
     </div>
 
-    <div v-else-if="articles.length === 0">
+    <div v-else-if="!articles || articles.length === 0">
       {{ $t("no-articles") }}
     </div>
 

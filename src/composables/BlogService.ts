@@ -1,30 +1,39 @@
 import { BlogArticle } from "../interface/BlogArticle.ts";
+import { BeforeFetchContext, createFetch } from "@vueuse/core";
 
 const token = import.meta.env.VITE_DOCS_TOKEN;
 const collectionId = import.meta.env.VITE_DOCS_COLLECTIONID;
 const docsBaseUrl = import.meta.env.VITE_DOCS_BASE_API_URL;
 
+const blogFetch = createFetch({
+  baseUrl: docsBaseUrl,
+  options: {
+    async beforeFetch({ options, url }: BeforeFetchContext) {
+      options.headers = {
+        ...options.headers,
+        Authorization: "Bearer " + token,
+      };
+      return { options, url };
+    },
+  },
+});
+
 const getArticles = async (): Promise<BlogArticle[]> => {
   let articles: BlogArticle[];
-  const response = await fetch(`${docsBaseUrl}/documents.list`, {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-      Authorization: "Bearer " + token,
-    },
-    body: JSON.stringify({
-      collectionId: collectionId,
-    }),
-  });
 
-  if (!response.ok) {
-    const error = await response.json();
-    console.error(error.message);
+  const fetched = await blogFetch(`${docsBaseUrl}/documents.list`)
+    .post({
+      collectionId: collectionId,
+    })
+    .json();
+
+  if (!fetched.response.value?.ok) {
+    const body = await fetched.response.value?.json();
+    console.error(body.message);
     return [];
   }
 
-  const fetched = await response.json();
-  articles = fetched.data.filter((article: BlogArticle) => {
+  articles = fetched.data.value.data.filter((article: BlogArticle) => {
     const isNotTemplate: boolean = !article.template;
     const isArticle: boolean = !!article.parentDocumentId;
     return isNotTemplate && isArticle;
