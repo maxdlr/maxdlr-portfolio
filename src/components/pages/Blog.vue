@@ -11,7 +11,7 @@ const articles: Ref<BlogArticle[]> = ref([]);
 
 const getArticles = async () => {
   isLoading.value = true;
-  articles.value = await BlogService.getArticles();
+  articles.value = await BlogService.getArticleList();
   isLoading.value = false;
 };
 

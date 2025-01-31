@@ -18,7 +18,7 @@ const blogFetch = createFetch({
   },
 });
 
-const getArticles = async (): Promise<BlogArticle[]> => {
+const getArticleList = async (): Promise<BlogArticle[]> => {
   let articles: BlogArticle[];
 
   const fetched = await blogFetch(`${docsBaseUrl}/documents.list`)
@@ -41,6 +41,21 @@ const getArticles = async (): Promise<BlogArticle[]> => {
   return articles;
 };
 
+const getArticle = async (articleId: string) => {
+  const fetched = await blogFetch(`${docsBaseUrl}/documents.info`)
+    .post({ id: articleId })
+    .json();
+
+  if (!fetched.response.value?.ok) {
+    const body = await fetched.response.value?.json();
+    console.error(body.message);
+    return [];
+  }
+
+  return fetched.data.value.data;
+};
+
 export const BlogService = {
-  getArticles,
+  getArticleList,
+  getArticle,
 };

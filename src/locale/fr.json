@@ -7,5 +7,6 @@
   "wip": "Projet en cours",
   "bye": "A plus.",
   "blog-title": "Des trucs que j'écris.",
-  "no-articles": "Aucun article pour le moment."
+  "no-articles": "Aucun article pour le moment.",
+  "minute-read": "~ {minutes} min "
 }

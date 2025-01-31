@@ -3,6 +3,8 @@ import App from "./App.vue";
 import "./style.css";
 import { createI18n } from "vue-i18n";
 import { messages } from "./locale";
+import "franken-ui/js/core.iife";
+import "franken-ui/js/icon.iife";
 
 const app = createApp(App);
 

@@ -1,16 +1,16 @@
 <script lang="ts" setup>
 import Button from "../atoms/Button.vue";
 import {
+  BIconArrowDownShort,
   BIconArrowRightShort,
+  BIconBehance,
   BIconCheck,
   BIconCopy,
+  BIconDribbble,
+  BIconGithub,
   BIconInstagram,
   BIconLinkedin,
-  BIconGithub,
-  BIconBehance,
-  BIconDribbble,
   BIconVimeo,
-  BIconArrowDownShort,
 } from "bootstrap-icons-vue";
 import { useClipboard } from "@vueuse/core";
 import { computed, Ref, ref } from "vue";
