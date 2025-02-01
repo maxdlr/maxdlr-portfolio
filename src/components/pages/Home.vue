@@ -1,16 +1,16 @@
 <script lang="ts" setup>
 import Button from "../atoms/Button.vue";
 import {
+  BIconArrowDownShort,
   BIconArrowRightShort,
+  BIconBehance,
   BIconCheck,
   BIconCopy,
+  BIconDribbble,
+  BIconGithub,
   BIconInstagram,
   BIconLinkedin,
-  BIconGithub,
-  BIconBehance,
-  BIconDribbble,
   BIconVimeo,
-  BIconArrowDownShort,
 } from "bootstrap-icons-vue";
 import { useClipboard } from "@vueuse/core";
 import { computed, Ref, ref } from "vue";
@@ -76,9 +76,10 @@ const gifSize = computed(() => data["footer-wip"].gif.size);
 
       <p class="text-center">
         {{ $t("this-is-the-website-of") }}
-        <a :href="data['social-links'].linkedin" class="uk-link max-sm:block">{{
-          data.author.name
-        }}</a
+        <a
+          :href="data['social-links'].linkedin"
+          class="uk-link max-sm:block hover:text-gray-400"
+          >{{ data.author.name }}</a
         ><span class="max-sm:hidden">.</span>
       </p>
 
@@ -108,12 +109,17 @@ const gifSize = computed(() => data["footer-wip"].gif.size);
             {{ $t("or-say-hello") }}
             <BIconArrowRightShort class="inline" />
           </span>
-          <a :href="`mailto:${email}`" class="uk-link inline">{{ email }}</a>
+          <a
+            :href="`mailto:${email}`"
+            class="uk-link inline hover:text-gray-400"
+            >{{ email }}</a
+          >
           <Button
             v-if="isSupported"
             :icon="!copied ? BIconCopy : BIconCheck"
             variant="ghost"
             @click.prevent="copy(email)"
+            class="hover:text-gray-400"
           />
         </div>
       </div>
@@ -142,7 +148,7 @@ const gifSize = computed(() => data["footer-wip"].gif.size);
     <div class="text-center">
       <a
         :href="data['footer-wip'].url"
-        class="text-center uk-link"
+        class="text-center uk-link inline-block hover:text-gray-400"
         target="_blank"
       >
         <p class="my-2">

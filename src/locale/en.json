@@ -7,5 +7,6 @@
   "wip": "Working on this right now",
   "bye": "Cheers.",
   "blog-title": "Things I write.",
-  "no-articles": "No articles yet"
+  "no-articles": "No articles yet",
+  "minute-read": "~ {minutes} min"
 }
