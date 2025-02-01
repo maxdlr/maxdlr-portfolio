@@ -1,38 +1,56 @@
-import { BlogArticle } from "../interface/BlogArticle.ts";
-import { BeforeFetchContext, createFetch } from "@vueuse/core";
+import { BlogArticle, BlogArticleView } from "../interface/BlogArticle.ts";
+import {
+  BeforeFetchContext,
+  createFetch,
+  OnFetchErrorContext,
+} from "@vueuse/core";
 
-const token = import.meta.env.VITE_DOCS_TOKEN;
-const collectionId = import.meta.env.VITE_DOCS_COLLECTIONID;
-const docsBaseUrl = import.meta.env.VITE_DOCS_BASE_API_URL;
+const blogArticlesCollectionId = import.meta.env.VITE_DOCS_COLLECTIONID;
 
 const blogFetch = createFetch({
-  baseUrl: docsBaseUrl,
+  baseUrl: import.meta.env.VITE_DOCS_BASE_API_URL,
   options: {
     async beforeFetch({ options, url }: BeforeFetchContext) {
       options.headers = {
         ...options.headers,
-        Authorization: "Bearer " + token,
+        Authorization: "Bearer " + import.meta.env.VITE_DOCS_TOKEN,
       };
       return { options, url };
+    },
+    async onFetchError(ctx: OnFetchErrorContext) {
+      console.error(ctx.data.message);
+      return ctx;
     },
   },
 });
 
-const getArticleList = async (): Promise<BlogArticle[]> => {
-  let articles: BlogArticle[];
-
-  const fetched = await blogFetch(`${docsBaseUrl}/documents.list`)
+const getArticleViewCount = async (documentId: string): Promise<number> => {
+  const fetched = await blogFetch<BlogArticleView[]>(`/views.list`)
     .post({
-      collectionId: collectionId,
+      documentId: documentId,
     })
     .json();
+  return fetched.data.value.data.reduce(
+    (acc: number, v: BlogArticleView) => acc + v.count,
+    0,
+  );
+};
 
-  if (!fetched.response.value?.ok) {
-    const body = await fetched.response.value?.json();
-    console.error(body.message);
-    return [];
-  }
+const createView = async (documentId: string): Promise<void> => {
+  await blogFetch<BlogArticleView>(`/views.create`)
+    .post({
+      documentId: documentId,
+    })
+    .json();
+};
 
+const getArticleList = async (): Promise<BlogArticle[]> => {
+  let articles: BlogArticle[];
+  const fetched = await blogFetch(`/documents.list`)
+    .post({
+      collectionId: blogArticlesCollectionId,
+    })
+    .json();
   articles = fetched.data.value.data.filter((article: BlogArticle) => {
     const isNotTemplate: boolean = !article.template;
     const isArticle: boolean = !!article.parentDocumentId;
@@ -41,21 +59,16 @@ const getArticleList = async (): Promise<BlogArticle[]> => {
   return articles;
 };
 
-const getArticle = async (articleId: string) => {
-  const fetched = await blogFetch(`${docsBaseUrl}/documents.info`)
-    .post({ id: articleId })
+const getArticleInfo = async (documentId: string): Promise<BlogArticle> => {
+  const fetched = await blogFetch(`/documents.info`)
+    .post({ id: documentId })
     .json();
-
-  if (!fetched.response.value?.ok) {
-    const body = await fetched.response.value?.json();
-    console.error(body.message);
-    return [];
-  }
-
   return fetched.data.value.data;
 };
 
 export const BlogService = {
   getArticleList,
-  getArticle,
+  getArticleInfo,
+  createView,
+  getArticleViewCount,
 };
