@@ -72,6 +72,11 @@ const gifSize = computed(() => data["footer-wip"].gif.size);
       @click.prevent="switchLocale(currentLocale?.code === 'fr' ? 'en' : 'fr')"
     />
     <div class="w-full flex justify-center items-center flex-col">
+      <img
+        class="uk-icon-image w-10 h-10"
+        src="/logo.png"
+        alt="Maxime de la Rocheterie - FullStack Developer logo"
+      />
       <h1 class="text-2xl py-2">Maxdlr</h1>
 
       <p class="text-center">
