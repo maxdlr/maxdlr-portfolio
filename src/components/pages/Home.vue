@@ -16,6 +16,9 @@ import { useClipboard } from "@vueuse/core";
 import { computed, Ref, ref } from "vue";
 import { useI18n } from "vue-i18n";
 import data from "../../model/data.json";
+import { usePageHead } from "../../composables/usePageHead.ts";
+
+usePageHead("home");
 
 const email: Ref<string> = ref(data.author.email);
 const { copy, copied, isSupported } = useClipboard({ source: email });

@@ -1,9 +1,12 @@
 <script setup lang="ts">
 import { onMounted, Ref, ref } from "vue";
-import ArticleCard from "../molecule/ArticleCard.vue";
-import { BlogService } from "../../composables/BlogService.ts";
-import { BlogArticle } from "../../interface/BlogArticle.ts";
-import Loader from "../atoms/Loader.vue";
+import ArticleCard from "../../atoms/ArticleCard.vue";
+import { BlogService } from "../../../composables/BlogService.ts";
+import { BlogArticle } from "../../../interface/BlogArticle.ts";
+import Loader from "../../atoms/Loader.vue";
+import { usePageHead } from "../../../composables/usePageHead.ts";
+
+usePageHead("blog");
 
 const blogArticlesShareUrl = import.meta.env.VITE_BLOG_ARTICLES_SHARE_URL;
 
@@ -22,7 +25,6 @@ const createView = async (id: string) => await BlogService.createView(id);
 </script>
 
 <template>
-  <hr class="uk-divider-icon" />
   <p class="text-sm italic text-gray-800 text-center py-4">
     {{ $t("blog-title") }}
   </p>
@@ -41,11 +43,12 @@ const createView = async (id: string) => await BlogService.createView(id);
       :key="article.id"
       class="w-[50%] max-md:w-full mb-3"
     >
-      <a
-        :href="blogArticlesShareUrl + article.url"
-        target="_blank"
-        @click="createView(article.id)"
-      >
+      <!--      <a-->
+      <!--        :href="blogArticlesShareUrl + article.url"-->
+      <!--        target="_blank"-->
+      <!--        @click="createView(article.id)"-->
+      <!--      >-->
+      <a :href="`/article/${article.id}`" @click="createView(article.id)">
         <ArticleCard :article="article" />
       </a>
     </div>

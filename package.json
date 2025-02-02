@@ -12,6 +12,7 @@
     "@octokit/openapi-types": "^22.2.0",
     "@octokit/types": "^13.6.1",
     "@types/lodash": "^4.17.13",
+    "@unhead/vue": "^1.11.18",
     "@vueuse/core": "^11.2.0",
     "bootstrap-icons-vue": "^1.11.3",
     "franken-ui": "^1.1.0",
@@ -22,7 +23,8 @@
     "postcss-sort-media-queries": "^5.2.0",
     "undici": "^7.3.0",
     "vue": "^3.5.10",
-    "vue-i18n": "10.0.5"
+    "vue-i18n": "10.0.5",
+    "vue-router": "^4.5.0"
   },
   "devDependencies": {
     "@eslint/js": "^9.14.0",
