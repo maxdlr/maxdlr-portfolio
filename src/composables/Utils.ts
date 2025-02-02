@@ -22,14 +22,6 @@ const styleHtml = (
   });
 };
 
-const updateImageUrls = (text: string, baseUrl: string) => {
-  const imgRegex = /<img[^>]*src="(\/api\/attachments[^"]*)"[^>]*>/g;
-
-  return text.replace(imgRegex, (match, src) => {
-    return match.replace(src, `${baseUrl}${src}`);
-  });
-};
-
 export const Utils = {
   getReadTime,
   styleHtml,

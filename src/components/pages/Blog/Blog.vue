@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { onMounted, Ref, ref } from "vue";
 import ArticleCard from "../../atoms/ArticleCard.vue";
-import { BlogService } from "../../../composables/BlogService.ts";
+import { BlogService } from "../../../services/BlogService.ts";
 import { BlogArticle } from "../../../interface/BlogArticle.ts";
 import Loader from "../../atoms/Loader.vue";
 import { usePageHead } from "../../../composables/usePageHead.ts";
@@ -21,7 +21,8 @@ const getArticles = async () => {
 
 const refresh = async () => await getArticles();
 onMounted(async () => await refresh());
-const createView = async (id: string) => await BlogService.createView(id);
+const createView = async (id: string) =>
+  await BlogService.createArticleView(id);
 </script>
 
 <template>

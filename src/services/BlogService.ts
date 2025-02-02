@@ -1,31 +1,12 @@
 import { BlogArticle, BlogArticleView } from "../interface/BlogArticle.ts";
-import {
-  BeforeFetchContext,
-  createFetch,
-  OnFetchErrorContext,
-} from "@vueuse/core";
+import { OutlineService } from "./OutlineService.ts";
 
 const blogArticlesCollectionId = import.meta.env.VITE_DOCS_COLLECTIONID;
 
-const blogFetch = createFetch({
-  baseUrl: import.meta.env.VITE_DOCS_BASE_API_URL,
-  options: {
-    async beforeFetch({ options, url }: BeforeFetchContext) {
-      options.headers = {
-        ...options.headers,
-        Authorization: "Bearer " + import.meta.env.VITE_DOCS_TOKEN,
-      };
-      return { options, url };
-    },
-    async onFetchError(ctx: OnFetchErrorContext) {
-      console.error(ctx.data.message);
-      return ctx;
-    },
-  },
-});
-
 const getArticleViewCount = async (documentId: string): Promise<number> => {
-  const fetched = await blogFetch<BlogArticleView[]>(`/views.list`)
+  const fetched = await OutlineService.outlineFetch<BlogArticleView[]>(
+    `/views.list`,
+  )
     .post({
       documentId: documentId,
     })
@@ -36,8 +17,8 @@ const getArticleViewCount = async (documentId: string): Promise<number> => {
   );
 };
 
-const createView = async (documentId: string): Promise<void> => {
-  await blogFetch<BlogArticleView>(`/views.create`)
+const createArticleView = async (documentId: string): Promise<void> => {
+  await OutlineService.outlineFetch<BlogArticleView>(`/views.create`)
     .post({
       documentId: documentId,
     })
@@ -46,7 +27,7 @@ const createView = async (documentId: string): Promise<void> => {
 
 const getArticleList = async (): Promise<BlogArticle[]> => {
   let articles: BlogArticle[];
-  const fetched = await blogFetch(`/documents.list`)
+  const fetched = await OutlineService.outlineFetch(`/documents.list`)
     .post({
       collectionId: blogArticlesCollectionId,
     })
@@ -60,7 +41,7 @@ const getArticleList = async (): Promise<BlogArticle[]> => {
 };
 
 const getArticleInfo = async (documentId: string): Promise<BlogArticle> => {
-  const fetched = await blogFetch(`/documents.info`)
+  const fetched = await OutlineService.outlineFetch(`/documents.info`)
     .post({ id: documentId })
     .json();
   return fetched.data.value.data;
@@ -69,6 +50,6 @@ const getArticleInfo = async (documentId: string): Promise<BlogArticle> => {
 export const BlogService = {
   getArticleList,
   getArticleInfo,
-  createView,
+  createArticleView,
   getArticleViewCount,
 };

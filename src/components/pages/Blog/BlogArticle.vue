@@ -1,17 +1,19 @@
 <script setup lang="ts">
 import { onBeforeMount, onMounted, ref, Ref } from "vue";
 import { BlogArticle } from "../../../interface/BlogArticle.ts";
-import { BlogService } from "../../../composables/BlogService.ts";
+import { BlogService } from "../../../services/BlogService.ts";
 import router from "../../../router";
 import { usePageHead } from "../../../composables/usePageHead.ts";
 import { formatDate } from "@vueuse/core";
 import { marked } from "marked";
 import Loader from "../../atoms/Loader.vue";
 import { Utils } from "../../../composables/Utils.ts";
+import { ImgProcessor } from "../../../composables/ImgProcessor.ts";
 
 const article: Ref<BlogArticle> = ref({} as BlogArticle);
 const id: Ref<string | null> = ref(null);
 const isLoading = ref(false);
+const imageProcessor = new ImgProcessor();
 
 usePageHead("article", {
   title: "Blog Article",
@@ -26,7 +28,7 @@ onBeforeMount(() => (id.value = router.currentRoute.value.params.id as string));
 onMounted(async () => {
   if (!id.value) return;
   await getArticle();
-  styleArticle();
+  await styleArticle();
 });
 const getArticle = async () => {
   isLoading.value = true;
@@ -34,7 +36,7 @@ const getArticle = async () => {
   isLoading.value = false;
 };
 
-const styleArticle = () => {
+const styleArticle = async () => {
   article.value.text = marked(article.value.text) as string;
 
   const rules: { [key: string]: string } = {
@@ -50,6 +52,7 @@ const styleArticle = () => {
 
   article.value.text = article.value.text.replace(/\\n/g, "<br/>");
   article.value.text = article.value.text.replace(/\\/g, "");
+  article.value.text = await imageProcessor.processText(article.value.text);
 };
 </script>
 
