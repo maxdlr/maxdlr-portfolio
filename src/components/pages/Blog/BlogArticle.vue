@@ -1,4 +1,4 @@
-<script setup lang="ts">
+<script lang="ts" setup>
 import { onBeforeMount, onMounted, ref, Ref } from "vue";
 import { BlogArticle } from "../../../interface/BlogArticle.ts";
 import { BlogService } from "../../../services/BlogService.ts";
@@ -14,6 +14,7 @@ const article: Ref<BlogArticle> = ref({} as BlogArticle);
 const id: Ref<string | null> = ref(null);
 const isLoading = ref(false);
 const imageProcessor = new ImgProcessor();
+const blogArticlesShareUrl = import.meta.env.VITE_BLOG_ARTICLES_SHARE_URL;
 
 usePageHead("article", {
   title: "Blog Article",
@@ -43,8 +44,11 @@ const styleArticle = async () => {
     h1: "uk-h1 pt-10",
     h2: "uk-h2 pt-8",
     h3: "uk-h3 pt-5",
-    p: "uk-paragraph",
+    p: "uk-paragraph mt-2",
     ul: "uk-list uk-list-bullet",
+    img: "rounded-2xl h-[300px] w-[300px] mx-auto",
+    a: "uk-link",
+    // hr: "uk-divider-icon",
   };
   for (const key in rules) {
     article.value.text = Utils.styleHtml(article.value.text, key, rules[key]);
@@ -53,12 +57,26 @@ const styleArticle = async () => {
   article.value.text = article.value.text.replace(/\\n/g, "<br/>");
   article.value.text = article.value.text.replace(/\\/g, "");
   article.value.text = await imageProcessor.processText(article.value.text);
+  article.value.text = article.value.text.replace(
+    /<a href/g,
+    "<a target='_blank' href",
+  );
+  article.value.text = article.value.text.replace(
+    /<hr>/g,
+    `
+<div class='uk-divider-icon text-center'><img
+        class="uk-icon-image w-7 h-7 m-auto"
+        src="/logo.png"
+        alt="Maxime de la Rocheterie - FullStack Developer logo"
+      /></div>
+`,
+  );
 };
 </script>
 
 <template>
   <Loader v-if="isLoading" />
-  <section v-else class="uk-container">
+  <section v-else class="uk-container max-w-[800px]">
     <div v-html="article.text" />
   </section>
 </template>

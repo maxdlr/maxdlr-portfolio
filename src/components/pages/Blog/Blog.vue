@@ -1,4 +1,4 @@
-<script setup lang="ts">
+<script lang="ts" setup>
 import { onMounted, Ref, ref } from "vue";
 import ArticleCard from "../../atoms/ArticleCard.vue";
 import { BlogService } from "../../../services/BlogService.ts";
@@ -7,8 +7,6 @@ import Loader from "../../atoms/Loader.vue";
 import { usePageHead } from "../../../composables/usePageHead.ts";
 
 usePageHead("blog");
-
-const blogArticlesShareUrl = import.meta.env.VITE_BLOG_ARTICLES_SHARE_URL;
 
 const isLoading = ref(false);
 const articles: Ref<BlogArticle[]> = ref([]);
@@ -39,8 +37,8 @@ const createView = async (id: string) =>
     </div>
 
     <div
-      v-else
       v-for="article in articles"
+      v-else
       :key="article.id"
       class="w-[50%] max-md:w-full mb-3"
     >
