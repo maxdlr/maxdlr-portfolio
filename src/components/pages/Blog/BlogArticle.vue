@@ -39,6 +39,12 @@ const getArticle = async () => {
 
 const styleArticle = async () => {
   article.value.text = marked(article.value.text) as string;
+  article.value.text = article.value.text.replace(
+    /<a href/g,
+    "<a target='_blank' href",
+  );
+
+  article.value.text = Utils.updateDocsAnchorLinks(article.value.text);
 
   const rules: { [key: string]: string } = {
     h1: "uk-h1 pt-10",
@@ -47,8 +53,7 @@ const styleArticle = async () => {
     p: "uk-paragraph mt-2",
     ul: "uk-list uk-list-bullet",
     img: "rounded-2xl h-[300px] w-[300px] mx-auto",
-    a: "uk-link",
-    // hr: "uk-divider-icon",
+    a: "uk-link hover:text-gray-400",
   };
   for (const key in rules) {
     article.value.text = Utils.styleHtml(article.value.text, key, rules[key]);
@@ -58,17 +63,15 @@ const styleArticle = async () => {
   article.value.text = article.value.text.replace(/\\/g, "");
   article.value.text = await imageProcessor.processText(article.value.text);
   article.value.text = article.value.text.replace(
-    /<a href/g,
-    "<a target='_blank' href",
-  );
-  article.value.text = article.value.text.replace(
     /<hr>/g,
     `
-<div class='uk-divider-icon text-center'><img
-        class="uk-icon-image w-7 h-7 m-auto"
-        src="/logo.png"
-        alt="Maxime de la Rocheterie - FullStack Developer logo"
-      /></div>
+<div class='uk-divider-icon text-center'>
+  <img
+    class="uk-icon-image w-7 h-7 m-auto"
+    src="/logo.png"
+    alt="Maxime de la Rocheterie - FullStack Developer logo"
+  />
+</div>
 `,
   );
 };

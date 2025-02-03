@@ -22,7 +22,18 @@ const styleHtml = (
   });
 };
 
+const updateDocsAnchorLinks = (html: string): string => {
+  return html.replace(
+    /<a\s+[^>]*href="(https:\/\/docs\.maxdlr\.com\/doc[^"#]*#h-[^"]*)"[^>]*>(.*?)<\/a>/g,
+    (match, href) => {
+      const newHref = href.split("#")[1];
+      return match.replace(href, "#" + newHref).replace("target='_blank'", "");
+    },
+  );
+};
+
 export const Utils = {
   getReadTime,
   styleHtml,
+  updateDocsAnchorLinks,
 };
