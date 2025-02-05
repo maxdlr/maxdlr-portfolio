@@ -6,14 +6,16 @@ import router from "../../../router";
 import { usePageHead } from "../../../composables/usePageHead.ts";
 import { formatDate } from "@vueuse/core";
 import Loader from "../../atoms/Loader.vue";
-import { ImgProcessor } from "../../../composables/ImgProcessor.ts";
-import { BlogArticleTextProcessor } from "../../../composables/BlogArticleTextProcessor.ts";
+import { ImgProcessor } from "../../../composables/processors/ImgProcessor.ts";
+import { BlogArticleTextProcessor } from "../../../composables/processors/BlogArticleTextProcessor.ts";
 import TransitionSlideUp from "../../atoms/TransitionSlideUp.vue";
+import { VideoProcessor } from "../../../composables/processors/VideoProcessor.ts";
 
 const article: Ref<BlogArticle> = ref({} as BlogArticle);
 const id: Ref<string | null> = ref(null);
 const isLoading = ref(false);
 const imageProcessor = new ImgProcessor();
+const videoProcessor = new VideoProcessor();
 // const blogArticlesShareUrl = import.meta.env.VITE_BLOG_ARTICLES_SHARE_URL;
 
 usePageHead("article", {
@@ -38,10 +40,9 @@ const getArticle = async () => {
 };
 
 const styleArticle = async () => {
-  article.value.text = new BlogArticleTextProcessor(
+  article.value.text = await new BlogArticleTextProcessor(
     article.value.text,
   ).process();
-  article.value.text = await imageProcessor.processText(article.value.text);
 };
 </script>
 
