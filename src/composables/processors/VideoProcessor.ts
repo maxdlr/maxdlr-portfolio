@@ -8,8 +8,6 @@ export class VideoProcessor extends MediaProcessor {
 
     await Promise.all(
       Array.from(videoLinks).map(async (link) => {
-        if (!link.textContent?.toLowerCase().endsWith(".mp4")) return;
-
         const href = new URL(
           link.getAttribute("href")!,
           window.location.origin,
@@ -24,6 +22,7 @@ export class VideoProcessor extends MediaProcessor {
 
             const video = document.createElement("video");
             video.controls = true;
+            video.classList.add("rounded-lg");
 
             const source = document.createElement("source");
             source.src = videoUrl;
