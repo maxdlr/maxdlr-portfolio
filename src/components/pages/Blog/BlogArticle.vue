@@ -6,58 +6,56 @@ import router from "../../../router";
 import { usePageHead } from "../../../composables/usePageHead.ts";
 import { formatDate } from "@vueuse/core";
 import Loader from "../../atoms/Loader.vue";
-import { ImgProcessor } from "../../../composables/processors/ImgProcessor.ts";
 import { BlogArticleTextProcessor } from "../../../composables/processors/BlogArticleTextProcessor.ts";
 import TransitionSlideUp from "../../atoms/TransitionSlideUp.vue";
-import { VideoProcessor } from "../../../composables/processors/VideoProcessor.ts";
+import _ from "lodash";
 
 const article: Ref<BlogArticle> = ref({} as BlogArticle);
 const id: Ref<string | null> = ref(null);
 const isLoading = ref(false);
-const imageProcessor = new ImgProcessor();
-const videoProcessor = new VideoProcessor();
-// const blogArticlesShareUrl = import.meta.env.VITE_BLOG_ARTICLES_SHARE_URL;
-
-usePageHead("article", {
-  title: article.value.title,
-  author: "Maxdlr",
-  description: article.value.title,
-  image: "/photo.jpg",
-  publishDate: formatDate(new Date(article.value.publishedAt), "YYYY-MM-DD"),
-  slug: article.value.title,
-});
+let blogProcessor: BlogArticleTextProcessor;
 
 onBeforeMount(() => (id.value = router.currentRoute.value.params.id as string));
+
 onMounted(async () => {
   if (!id.value) return;
-  isLoading.value = true;
   await getArticle();
-  await styleArticle();
-  isLoading.value = false;
+  buildHead();
 });
+
 const getArticle = async () => {
+  isLoading.value = true;
   article.value = await BlogService.getArticleInfo(id.value as string);
+  blogProcessor = new BlogArticleTextProcessor(article.value.text);
+  article.value.text = await blogProcessor.process();
+  isLoading.value = false;
 };
 
-const styleArticle = async () => {
-  article.value.text = await new BlogArticleTextProcessor(
-    article.value.text,
-  ).process();
+const buildHead = () => {
+  usePageHead("article", {
+    title: article.value.title,
+    author: "Maxdlr",
+    description: _.truncate(blogProcessor.articleDescription, {
+      length: 100,
+      omission: "...",
+    }),
+    image: blogProcessor.articleImageLinks[0],
+    publishDate: formatDate(new Date(article.value.publishedAt), "YYYY-MM-DD"),
+    slug: article.value.title,
+  });
 };
 </script>
 
 <template>
   <TransitionSlideUp>
     <div
-      class="w-full h-[40vh] flex justify-center items-center"
       v-if="isLoading"
+      class="w-full h-[40vh] flex justify-center items-center"
     >
       <Loader />
     </div>
     <main v-else>
-      <article class="uk-container max-w-[800px]">
-        <div v-html="article.text" />
-      </article>
+      <article class="uk-container max-w-[800px] pb-10" v-html="article.text" />
     </main>
   </TransitionSlideUp>
 </template>

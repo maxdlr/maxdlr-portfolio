@@ -1,6 +1,8 @@
 import { MediaProcessor } from "./MediaProcessor.ts";
 
 export class ImgProcessor extends MediaProcessor {
+  public newImageUrls: string[] = [];
+
   public async process(doc: Document): Promise<Document> {
     const images = doc.querySelectorAll("img[src^='/api/attachments']");
 
@@ -16,6 +18,7 @@ export class ImgProcessor extends MediaProcessor {
           const imageUrl = await this.fetchMedia(id);
           if (imageUrl) {
             img.setAttribute("src", imageUrl);
+            this.newImageUrls.push(imageUrl);
             this.addLightBox(img);
           }
         }

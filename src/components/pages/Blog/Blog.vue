@@ -42,11 +42,6 @@ const createView = async (id: string) =>
       :key="article.id"
       class="w-[50%] max-md:w-full mb-3"
     >
-      <!--      <a-->
-      <!--        :href="blogArticlesShareUrl + article.url"-->
-      <!--        target="_blank"-->
-      <!--        @click="createView(article.id)"-->
-      <!--      >-->
       <a :href="`/article/${article.id}`" @click="createView(article.id)">
         <ArticleCard :article="article" />
       </a>
