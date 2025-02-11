@@ -16,25 +16,10 @@ import { useClipboard } from "@vueuse/core";
 import { computed, Ref, ref } from "vue";
 import { useI18n } from "vue-i18n";
 import data from "../../model/data.json";
-import { usePageHead } from "../../composables/usePageHead.ts";
-
-usePageHead("home");
-
-const email: Ref<string> = ref(data.author.email);
-const { copy, copied, isSupported } = useClipboard({ source: email });
 
 const { locale } = useI18n({ useScope: "global" });
-const locales = ref([
-  { name: "🇺🇸", code: "en" },
-  { name: "🇫🇷", code: "fr" },
-]);
-const currentLocale = ref(
-  locales.value.find((lang) => lang.code === locale.value),
-);
-const switchLocale = (e: string) => {
-  currentLocale.value = locales.value.filter((l) => l.code === e)[0];
-  locale.value = currentLocale.value.code;
-};
+const email: Ref<string> = ref(data.author.email);
+const { copy, copied, isSupported } = useClipboard({ source: email });
 
 const socials = ref([
   {
@@ -68,19 +53,15 @@ const gifSize = computed(() => data["footer-wip"].gif.size);
 
 <template>
   <section class="container mx-auto px-4">
-    <Button
-      :label="currentLocale?.code === 'fr' ? '🇺🇸' : '🇫🇷'"
-      class="float-end"
-      variant="ghost"
-      @click.prevent="switchLocale(currentLocale?.code === 'fr' ? 'en' : 'fr')"
-    />
-    <div class="w-full flex justify-center items-center flex-col">
-      <img
-        class="uk-icon-image w-10 h-10"
-        src="/logo.png"
-        alt="Maxime de la Rocheterie - FullStack Developer logo"
-      />
-      <h1 class="text-2xl py-2">Maxdlr</h1>
+    <div class="w-full flex justify-center items-center flex-col mt-10">
+      <div class="text-center md:hidden">
+        <img
+          alt="Maxime de la Rocheterie - FullStack Developer logo"
+          class="uk-icon-image w-10 h-10 mx-auto"
+          src="/logo.png"
+        />
+        <h1 class="text-2xl py-2">Maxdlr</h1>
+      </div>
 
       <p class="text-center">
         {{ $t("this-is-the-website-of") }}
@@ -101,14 +82,11 @@ const gifSize = computed(() => data["footer-wip"].gif.size);
             class="inline"
           >
             <p v-if="index !== 0" class="inline px-2">{{ $t("or") }}</p>
-            <Button :label="item.name" :url="item.url" />
+            <Button :label="item.name" :url="item.url" target="_blank" />
           </div>
           <p class="sm:hidden ps-2">?</p>
         </div>
-        <p
-          v-if="currentLocale?.code === 'en'"
-          class="text-center max-sm:hidden"
-        >
+        <p v-if="locale === 'en'" class="text-center max-sm:hidden">
           services.
         </p>
 
@@ -125,9 +103,9 @@ const gifSize = computed(() => data["footer-wip"].gif.size);
           <Button
             v-if="isSupported"
             :icon="!copied ? BIconCopy : BIconCheck"
+            class="hover:text-gray-400"
             variant="ghost"
             @click.prevent="copy(email)"
-            class="hover:text-gray-400"
           />
         </div>
       </div>
@@ -147,6 +125,7 @@ const gifSize = computed(() => data["footer-wip"].gif.size);
           :icon="social.iconComponent"
           :url="social.url"
           extra-class="max-sm:px-2"
+          target="_blank"
           variant="ghost"
         />
       </div>

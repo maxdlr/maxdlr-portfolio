@@ -11,7 +11,11 @@ defineProps({
     >,
     default: "default",
   },
-  extraClass: { type: String },
+  extraClass: { type: String, default: "" },
+  target: {
+    type: String as PropType<"_blank">,
+    required: false,
+  },
 });
 </script>
 
@@ -21,7 +25,7 @@ defineProps({
       v-if="url"
       :class="`uk-button uk-button-${variant} ${extraClass} hover:bg-gray-900 hover:text-white transition-all active:bg-gray-600`"
       :href="url"
-      target="_blank"
+      :target="target ?? ''"
     >
       <component :is="icon" v-if="icon" />
       <span v-if="label">{{ label }}</span>

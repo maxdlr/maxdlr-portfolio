@@ -4,6 +4,7 @@ import { codeToHtml } from "shiki";
 import { VideoProcessor } from "./VideoProcessor.ts";
 import { ImgProcessor } from "./ImgProcessor.ts";
 import { Utils } from "../Utils.ts";
+import { getCodePenEmbed } from "../../services/integrations/CodePenService.ts";
 
 export class BlogArticleTextProcessor {
   public articleImageLinks: string[] = [];
@@ -149,7 +150,7 @@ export class BlogArticleTextProcessor {
       p: ["pt-3", "indent-3"],
       "blockquote p": ["indent-0", "pt-0"],
       ul: ["uk-list", "uk-list-bullet", "mt-6", "list-disc"],
-      ol: ["list-decimal"],
+      ol: ["list-decimal", "ps-10"],
       li: ["mt-3"],
       img: [
         "rounded-xl",
@@ -289,6 +290,19 @@ export class BlogArticleTextProcessor {
         });
       }
     }
+    this.blogArticleText = this.doc.body.innerHTML;
+  }
+
+  private editCopePen() {
+    const as = this.doc.getElementsByTagName("a");
+
+    for (const a of as) {
+      if (a.href.includes("codepen.io")) {
+        a.replaceWith(getCodePenEmbed(a.href));
+        break;
+      }
+    }
+
     this.blogArticleText = this.doc.body.innerHTML;
   }
 }

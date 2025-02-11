@@ -1,5 +1,6 @@
 import { BlogArticle, BlogArticleView } from "../interface/BlogArticle.ts";
 import { OutlineService } from "./OutlineService.ts";
+import { formatDate } from "@vueuse/core";
 
 const blogArticlesCollectionId = import.meta.env.VITE_DOCS_COLLECTIONID;
 
@@ -26,7 +27,7 @@ const createArticleView = async (documentId: string): Promise<void> => {
 };
 
 const getArticleList = async (): Promise<BlogArticle[]> => {
-  let articles: BlogArticle[];
+  let articles: BlogArticle[] = [];
   const fetched = await OutlineService.outlineFetch(`/documents.list`)
     .post({
       collectionId: blogArticlesCollectionId,
@@ -37,6 +38,11 @@ const getArticleList = async (): Promise<BlogArticle[]> => {
     const isArticle: boolean = !!article.parentDocumentId;
     return isNotTemplate && isArticle;
   });
+
+  articles = articles.map((article: BlogArticle) => {
+    return transform(article);
+  });
+
   return articles;
 };
 
@@ -44,7 +50,12 @@ const getArticleInfo = async (documentId: string): Promise<BlogArticle> => {
   const fetched = await OutlineService.outlineFetch(`/documents.info`)
     .post({ id: documentId })
     .json();
-  return fetched.data.value.data;
+  return transform(fetched.data.value.data);
+};
+
+const transform = (article: BlogArticle): BlogArticle => {
+  article.publishedAt = formatDate(new Date(article.publishedAt), "YYYY-MM-DD");
+  return article;
 };
 
 export const BlogService = {
