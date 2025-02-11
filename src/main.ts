@@ -5,7 +5,10 @@ import { createI18n } from "vue-i18n";
 import { messages } from "./locale";
 import "franken-ui/js/core.iife";
 import "franken-ui/js/icon.iife";
+import router from "./router";
+import { createHead } from "@unhead/vue";
 
+const head = createHead();
 const app = createApp(App);
 
 const i18n = createI18n({
@@ -21,4 +24,6 @@ const i18n = createI18n({
   },
 });
 app.use(i18n);
+app.use(router);
+app.use(head);
 app.mount("#app");

@@ -1,9 +1,9 @@
 <script lang="ts" setup>
-import Home from "./components/pages/Home.vue";
-import Blog from "./components/pages/Blog.vue";
+import Layout from "./components/atoms/Layout.vue";
 </script>
 
 <template>
-  <Home />
-  <Blog />
+  <Layout>
+    <router-view />
+  </Layout>
 </template>

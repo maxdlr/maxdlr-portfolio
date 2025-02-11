@@ -1,9 +1,9 @@
-<script setup lang="ts">
+<script lang="ts" setup>
 import { onMounted, PropType, Ref, ref } from "vue";
 import { BlogArticle } from "../../interface/BlogArticle.ts";
 import { Utils } from "../../composables/Utils.ts";
 import { formatDate } from "@vueuse/core";
-import { BlogService } from "../../composables/BlogService.ts";
+import { BlogService } from "../../services/BlogService.ts";
 
 const props = defineProps({
   article: {
@@ -19,16 +19,8 @@ const isFetchingViews: Ref<boolean> = ref(false);
 
 onMounted(async () => await init());
 
-const formatArticle = () => {
-  blogArticle.value = props.article;
-  blogArticle.value.publishedAt = formatDate(
-    new Date(blogArticle.value.publishedAt),
-    "YYYY-MM-DD",
-  );
-};
-
 const init = async () => {
-  formatArticle();
+  blogArticle.value = props.article;
   readingTime.value = Math.round(Utils.getReadTime(blogArticle.value.text));
   await getViews();
 };
