@@ -15,8 +15,8 @@ const outlineFetch = createFetch({
       return { options, url };
     },
     async onFetchError(ctx: OnFetchErrorContext) {
+      console.trace(ctx);
       if (ctx.data) {
-        console.trace(ctx.data);
         throw new Error(ctx.data.message);
       }
       return ctx;
