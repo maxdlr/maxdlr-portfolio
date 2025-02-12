@@ -4,7 +4,6 @@ import { codeToHtml } from "shiki";
 import { VideoProcessor } from "./VideoProcessor.ts";
 import { ImgProcessor } from "./ImgProcessor.ts";
 import { Utils } from "../Utils.ts";
-import { getCodePenEmbed } from "../../services/integrations/CodePenService.ts";
 
 export class BlogArticleTextProcessor {
   public articleImageLinks: string[] = [];
@@ -290,19 +289,6 @@ export class BlogArticleTextProcessor {
         });
       }
     }
-    this.blogArticleText = this.doc.body.innerHTML;
-  }
-
-  private editCopePen() {
-    const as = this.doc.getElementsByTagName("a");
-
-    for (const a of as) {
-      if (a.href.includes("codepen.io")) {
-        a.replaceWith(getCodePenEmbed(a.href));
-        break;
-      }
-    }
-
     this.blogArticleText = this.doc.body.innerHTML;
   }
 }

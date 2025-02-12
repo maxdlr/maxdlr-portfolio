@@ -2,7 +2,6 @@
 import { onMounted, PropType, Ref, ref } from "vue";
 import { BlogArticle } from "../../interface/BlogArticle.ts";
 import { Utils } from "../../composables/Utils.ts";
-import { formatDate } from "@vueuse/core";
 import { BlogService } from "../../services/BlogService.ts";
 
 const props = defineProps({
