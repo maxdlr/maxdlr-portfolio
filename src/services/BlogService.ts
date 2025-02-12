@@ -33,6 +33,9 @@ const getArticleList = async (): Promise<BlogArticle[]> => {
       collectionId: blogArticlesCollectionId,
     })
     .json();
+
+  console.log(fetched.data.value);
+
   articles = fetched.data.value.data.filter((article: BlogArticle) => {
     const isNotTemplate: boolean = !article.template;
     const isArticle: boolean = !!article.parentDocumentId;
