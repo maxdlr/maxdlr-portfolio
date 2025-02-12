@@ -47,6 +47,7 @@ export class BlogArticleTextProcessor {
     this.buildArticleDescription();
 
     this.removeBackSlashes();
+    this.addShareDocsBaseUrl();
     this.editLineBreak();
     return this.blogArticleText;
   }
@@ -238,15 +239,14 @@ export class BlogArticleTextProcessor {
   }
 
   private editAnchorLinks(): void {
-    this.blogArticleText = this.blogArticleText.replace(
-      /<a\s+[^>]*href="(https:\/\/docs\.maxdlr\.com\/doc[^"#]*#h-[^"]*)"[^>]*>(.*?)<\/a>/g,
-      (match, href) => {
-        const newHref = href.split("#")[1];
-        return match
-          .replace(href, "#" + newHref)
-          .replace("target='_blank'", "");
-      },
-    );
+    const as = this.doc.getElementsByTagName("a");
+    for (let a of as) {
+      const url: URL = new URL(a.href);
+      if (url.origin === "https://docs.maxdlr.com" && url.hash !== "") {
+        a.href = url.hash;
+        a.target = "";
+      }
+    }
 
     const elements = this.doc.querySelectorAll("h1, h2, h3, h4, h5, h6");
     elements.forEach((element) => {
@@ -254,6 +254,17 @@ export class BlogArticleTextProcessor {
         "h-" + _.kebabCase(_.lowerCase(element.textContent as string));
     });
 
+    this.blogArticleText = this.doc.body.innerHTML;
+  }
+
+  private addShareDocsBaseUrl(): void {
+    const as = this.doc.getElementsByTagName("a");
+    for (const a of as) {
+      const docUrl = a.href.replace(location.origin, "");
+      if (docUrl.startsWith("/doc")) {
+        a.href = import.meta.env.VITE_BLOG_ARTICLES_SHARE_URL + docUrl;
+      }
+    }
     this.blogArticleText = this.doc.body.innerHTML;
   }
 
