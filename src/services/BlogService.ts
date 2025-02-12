@@ -27,7 +27,7 @@ const createArticleView = async (documentId: string): Promise<void> => {
 };
 
 const getArticleList = async (): Promise<BlogArticle[]> => {
-  let articles: BlogArticle[] = [];
+  let articles: BlogArticle[];
   const fetched = await OutlineService.outlineFetch(`/documents.list`)
     .post({
       collectionId: blogArticlesCollectionId,
