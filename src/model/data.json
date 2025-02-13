@@ -27,5 +27,14 @@
       "size": "100"
     },
     "url": "https://github.com/maxdlr/MaxOrbe"
+  },
+  "blog": {
+    "article": {
+      "og": {
+        "title": "Yet another blog article",
+        "description": "This is another Maxdlr blog article. Let's hope it's not boring.",
+        "photo": "/photo.jpg"
+      }
+    }
   }
 }

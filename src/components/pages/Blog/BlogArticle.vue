@@ -9,7 +9,6 @@ import { formatDate } from "@vueuse/core";
 import Loader from "../../atoms/Loader.vue";
 import { BlogArticleTextProcessor } from "../../../composables/processors/BlogArticleTextProcessor.ts";
 import _ from "lodash";
-import { Attachment } from "../../../services/AttachementService.ts";
 
 const article: Ref<BlogArticle> = ref({} as BlogArticle);
 const id: Ref<string | null> = ref(null);
@@ -33,21 +32,36 @@ const getArticle = async () => {
 };
 
 const buildHead = () => {
-  const image: Attachment | undefined = blogProcessor.articleImages.find(
-    (img) =>
+  const image = (): string => {
+    const imgAttachment = blogProcessor.articleImages.find((img) =>
       ["png", "jpeg", "jpg"].includes(
         (img.attachments?.type ?? "").replace("image/", ""),
       ),
-  );
+    );
 
-  usePageHead("article", {
-    title: article.value.title,
-    author: "Maxdlr",
-    description: _.truncate(blogProcessor.articleDescription, {
+    return imgAttachment && imgAttachment.url && imgAttachment.url != ""
+      ? imgAttachment.url
+      : "/photo.jpg";
+  };
+
+  const title =
+    article.value.title !== ""
+      ? article.value.title
+      : data.blog.article.og.title;
+
+  const description = (): string => {
+    const d = _.truncate(blogProcessor.articleDescription, {
       length: 100,
       omission: "...",
-    }),
-    image: image?.url ?? "/photo.jpg",
+    });
+    return d !== "" ? d : data.blog.article.og.description;
+  };
+
+  usePageHead("article", {
+    title: title,
+    author: "Maxdlr",
+    description: description(),
+    image: image(),
     publishDate: formatDate(new Date(article.value.publishedAt), "YYYY-MM-DD"),
     slug: article.value.title,
   });
