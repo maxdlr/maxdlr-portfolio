@@ -1,13 +1,13 @@
 import { OutlineService } from "./OutlineService.ts";
 
-export interface GetAttachmentReturn {
+export interface Attachment {
   id: string;
   attachments?: Blob;
   url?: string;
   error?: Error;
 }
 
-const getAttachment = async (id: string): Promise<GetAttachmentReturn> => {
+const getAttachment = async (id: string): Promise<Attachment> => {
   try {
     const fetched = await OutlineService.outlineFetch(`/attachments.redirect`)
       .post({
@@ -23,7 +23,7 @@ const getAttachment = async (id: string): Promise<GetAttachmentReturn> => {
       attachments: blob,
       url: imageUrl,
     };
-  } catch (error: any) {
+  } catch (error) {
     return {
       id: id,
       error: error as Error,

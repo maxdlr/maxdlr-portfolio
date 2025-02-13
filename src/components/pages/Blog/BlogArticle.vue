@@ -9,6 +9,7 @@ import { formatDate } from "@vueuse/core";
 import Loader from "../../atoms/Loader.vue";
 import { BlogArticleTextProcessor } from "../../../composables/processors/BlogArticleTextProcessor.ts";
 import _ from "lodash";
+import { Attachment } from "../../../services/AttachementService.ts";
 
 const article: Ref<BlogArticle> = ref({} as BlogArticle);
 const id: Ref<string | null> = ref(null);
@@ -32,6 +33,13 @@ const getArticle = async () => {
 };
 
 const buildHead = () => {
+  const image: Attachment | undefined = blogProcessor.articleImages.find(
+    (img) =>
+      ["png", "jpeg", "jpg"].includes(
+        (img.attachments?.type ?? "").replace("image/", ""),
+      ),
+  );
+
   usePageHead("article", {
     title: article.value.title,
     author: "Maxdlr",
@@ -39,7 +47,7 @@ const buildHead = () => {
       length: 100,
       omission: "...",
     }),
-    image: blogProcessor.articleImageLinks[0],
+    image: image?.url ?? "/photo.jpg",
     publishDate: formatDate(new Date(article.value.publishedAt), "YYYY-MM-DD"),
     slug: article.value.title,
   });

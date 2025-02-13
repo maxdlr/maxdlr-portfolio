@@ -1,7 +1,8 @@
 import { MediaProcessor } from "./MediaProcessor.ts";
+import { Attachment } from "../../services/AttachementService.ts";
 
 export class ImgProcessor extends MediaProcessor {
-  public newImageUrls: string[] = [];
+  public imgList: Attachment[] = [];
 
   public async process(doc: Document): Promise<Document> {
     const images = doc.querySelectorAll("img[src^='/api/attachments']");
@@ -15,10 +16,10 @@ export class ImgProcessor extends MediaProcessor {
         const id = srcUrl.searchParams.get("id");
 
         if (id) {
-          const imageUrl = await this.fetchMedia(id);
-          if (imageUrl) {
-            img.setAttribute("src", imageUrl);
-            this.newImageUrls.push(imageUrl);
+          const attachment = await this.fetchMedia(id);
+          if (attachment.url) {
+            img.setAttribute("src", attachment.url);
+            this.imgList.push(attachment);
             this.addLightBox(img);
           }
         }

@@ -4,9 +4,10 @@ import { codeToHtml } from "shiki";
 import { VideoProcessor } from "./VideoProcessor.ts";
 import { ImgProcessor } from "./ImgProcessor.ts";
 import { Utils } from "../Utils.ts";
+import { Attachment } from "../../services/AttachementService.ts";
 
 export class BlogArticleTextProcessor {
-  public articleImageLinks: string[] = [];
+  public articleImages: Attachment[] = [];
   public articleDescription: string = "";
 
   private blogArticleText: string;
@@ -53,7 +54,7 @@ export class BlogArticleTextProcessor {
   }
 
   private retrieveImageLinks() {
-    this.articleImageLinks = this.imageProcessor.newImageUrls;
+    this.articleImages = this.imageProcessor.imgList;
   }
 
   private buildArticleDescription() {
