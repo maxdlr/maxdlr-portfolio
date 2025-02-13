@@ -15,7 +15,10 @@ const id: Ref<string | null> = ref(null);
 const isLoading = ref(false);
 let blogProcessor: BlogArticleTextProcessor;
 
-onBeforeMount(() => (id.value = router.currentRoute.value.params.id as string));
+onBeforeMount(() => {
+  buildHead();
+  id.value = router.currentRoute.value.params.id as string;
+});
 
 onMounted(async () => {
   if (!id.value) return;

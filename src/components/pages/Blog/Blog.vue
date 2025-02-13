@@ -1,12 +1,12 @@
 <script lang="ts" setup>
-import { onMounted, Ref, ref } from "vue";
+import { onBeforeMount, onMounted, Ref, ref } from "vue";
 import ArticleCard from "../../atoms/ArticleCard.vue";
 import { BlogService } from "../../../services/BlogService.ts";
 import { BlogArticle } from "../../../interface/BlogArticle.ts";
 import Loader from "../../atoms/Loader.vue";
 import { usePageHead } from "../../../composables/usePageHead.ts";
 
-usePageHead("blog");
+onBeforeMount(() => usePageHead("blog"));
 
 const isLoading = ref(false);
 const articles: Ref<BlogArticle[]> = ref([]);
