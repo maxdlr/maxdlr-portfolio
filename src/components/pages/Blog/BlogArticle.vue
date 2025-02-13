@@ -16,7 +16,7 @@ const isLoading = ref(false);
 let blogProcessor: BlogArticleTextProcessor;
 
 onBeforeMount(() => {
-  buildHead();
+  preBuildHead();
   id.value = router.currentRoute.value.params.id as string;
 });
 
@@ -32,6 +32,17 @@ const getArticle = async () => {
   blogProcessor = new BlogArticleTextProcessor(article.value.text);
   article.value.text = await blogProcessor.process();
   isLoading.value = false;
+};
+
+const preBuildHead = () => {
+  usePageHead("article", {
+    title: data.blog.article.og.title,
+    author: "Maxdlr",
+    description: data.blog.article.og.description,
+    image: "/photo.jpg",
+    publishDate: formatDate(new Date(), "YYYY-MM-DD"),
+    slug: data.blog.article.og.title,
+  });
 };
 
 const buildHead = () => {
