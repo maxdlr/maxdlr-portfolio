@@ -1,4 +1,5 @@
 import { MediaProcessor } from "./MediaProcessor.ts";
+import { Attachment } from "../../services/AttachementService.ts";
 
 export class VideoProcessor extends MediaProcessor {
   public async process(doc: Document): Promise<Document> {
@@ -15,8 +16,8 @@ export class VideoProcessor extends MediaProcessor {
         const id = href.searchParams.get("id");
 
         if (id) {
-          const videoUrl = await this.fetchMedia(id);
-          if (videoUrl) {
+          const videoAttachment: Attachment = await this.fetchMedia(id);
+          if (videoAttachment) {
             const videoContainer = document.createElement("div");
             videoContainer.className = "video-container";
 
@@ -25,7 +26,7 @@ export class VideoProcessor extends MediaProcessor {
             video.classList.add("rounded-lg");
 
             const source = document.createElement("source");
-            source.src = videoUrl;
+            source.src = videoAttachment.url as string;
             source.type = "video/mp4";
 
             video.appendChild(source);
