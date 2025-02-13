@@ -81,7 +81,7 @@ export function usePageHead(
       { property: "og:url", content: pageMeta.url },
       { property: "og:site_name", content: commonMeta.siteName },
       { property: "og:image:secure_url", content: pageMeta.image },
-      { property: "og:image", content: pageMeta.image },
+      { name: "image", property: "og:image", content: pageMeta.image },
       { property: "og:image:width", content: commonMeta.defaultImageWidth },
       { property: "og:image:height", content: commonMeta.defaultImageHeight },
 
