@@ -23,7 +23,7 @@ const i18n = createI18n({
     },
   },
 });
+app.use(head);
 app.use(i18n);
 app.use(router);
-app.use(head);
 app.mount("#app");
