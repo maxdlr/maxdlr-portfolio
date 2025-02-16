@@ -24,27 +24,35 @@ const createView = async (id: string) =>
 </script>
 
 <template>
-  <p class="text-sm italic text-gray-800 text-center py-4">
-    {{ $t("blog-title") }}
-  </p>
-  <section
+  <div
+    v-if="isLoading"
     class="flex flex-col items-center justify-center container mx-auto px-4 mb-10"
   >
-    <Loader v-if="isLoading" />
+    <Loader />
+  </div>
 
-    <div v-else-if="!articles || articles.length === 0">
+  <main v-else>
+    <h1 class="text-sm italic text-gray-800 text-center py-4">
+      {{ $t("blog-title") }}
+    </h1>
+
+    <div v-if="!articles || articles.length === 0">
       {{ $t("no-articles") }}
     </div>
 
-    <div
-      v-for="article in articles"
+    <section
       v-else
-      :key="article.id"
-      class="w-[50%] max-md:w-full mb-3"
+      class="flex flex-col items-center justify-center container mx-auto px-4 mb-10"
     >
-      <a :href="`/article/${article.id}`" @click="createView(article.id)">
-        <ArticleCard :article="article" />
-      </a>
-    </div>
-  </section>
+      <div
+        v-for="article in articles"
+        :key="article.id"
+        class="w-[50%] max-md:w-full mb-3"
+      >
+        <a :href="`/article/${article.id}`" @click="createView(article.id)">
+          <ArticleCard :article="article" />
+        </a>
+      </div>
+    </section>
+  </main>
 </template>

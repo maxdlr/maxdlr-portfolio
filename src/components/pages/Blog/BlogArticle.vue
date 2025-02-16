@@ -90,14 +90,16 @@ const buildHead = () => {
     <Loader />
   </div>
   <main v-else class="uk-container max-md:mx-3 max-w-[800px] pb-10">
-    <section class="text-sm italic text-gray-700 max-md:text-center">
+    <section class="text-sm italic text-gray-700 max-md:text-center pb-8">
       <a :href="data['social-links'].linkedin" class="uk-link">
         Maxime de la Rocheterie
       </a>
       <span class="mx-3"> • </span>
       <p class="inline">{{ article.publishedAt }}</p>
     </section>
-
-    <article v-html="article.text" />
+    <section>
+      <h1 class="text-center uk-h1 mt-10 pb-8">{{ article.title }}</h1>
+      <article v-html="article.text" />
+    </section>
   </main>
 </template>

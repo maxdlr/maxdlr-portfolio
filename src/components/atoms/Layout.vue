@@ -75,7 +75,7 @@ const links: {
           </li>
           <li>
             <Button
-              :label="currentLocale?.code === 'fr' ? '🇺🇸' : '🇫🇷'"
+              :label="currentLocale?.code === 'fr' ? '🇫🇷' : '🇺🇸'"
               class="float-end"
               extra-class="px-2 md:p-5"
               variant="ghost"

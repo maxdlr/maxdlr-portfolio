@@ -12,7 +12,7 @@ const head = createHead();
 const app = createApp(App);
 
 const i18n = createI18n({
-  locale: "fr",
+  locale: navigator.language.substring(0, 2),
   fallbackLocale: "en",
   messages: {
     en: {
