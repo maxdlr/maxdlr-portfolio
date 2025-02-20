@@ -6,31 +6,33 @@ import {
   GithubService,
 } from "../../../services/GithubService.ts";
 import Loader from "../../atoms/Loader.vue";
-import _ from "lodash";
 import ContribSquare from "../../gh/ContribSquare.vue";
 
 const contributions: Ref<CommitDate[]> = ref([]);
 const isLoading: Ref<boolean> = ref(false);
 const githubService = new GithubService();
-const intensityMap: Ref<CommitDateWithIntensity[]> = ref([]);
+const contributionsWithIntensity: Ref<CommitDateWithIntensity[]> = ref([]);
 
 onMounted(async () => {
+  isLoading.value = true;
   // await refresh();
-  const day = () => _.random(1, 31);
-  const month = () => _.random(1, 12);
-  const year = () => 2024;
+  // const day = () => _.random(1, 31);
+  // const month = () => _.random(1, 12);
+  // const year = () => 2024;
+  //
+  // for (let i = 0; i < 300; i++) {
+  //   contributions.value.push({
+  //     day: day(),
+  //     month: month(),
+  //     year: year(),
+  //   });
+  // }
+  await refresh();
 
-  for (let i = 0; i < 300; i++) {
-    contributions.value.push({
-      day: day(),
-      month: month(),
-      year: year(),
-    });
-  }
-
-  intensityMap.value = githubService.calculateDateIntensity(
+  contributionsWithIntensity.value = githubService.calculateDateIntensity(
     contributions.value,
   );
+  isLoading.value = false;
 });
 
 const refresh = async () => {
@@ -46,21 +48,54 @@ const refresh = async () => {
 </script>
 
 <template>
+  <div>
+    <div :class="[`bg-blue-50`]" />
+    <div :class="[`bg-blue-100`]" />
+    <div :class="[`bg-blue-200`]" />
+    <div :class="[`bg-blue-300`]" />
+    <div :class="[`bg-blue-400`]" />
+    <div :class="[`bg-blue-500`]" />
+    <div :class="[`bg-blue-600`]" />
+    <div :class="[`bg-blue-700`]" />
+    <div :class="[`bg-blue-800`]" />
+    <div :class="[`bg-blue-900`]" />
+    <div :class="[`bg-blue-950`]" />
+  </div>
   <div v-if="isLoading" class="w-fit mx-auto">
     <Loader />
   </div>
-  <div v-else class="grid grid-cols-12">
-    <div v-for="month in 12" :key="month">
+
+  <div v-else class="flex justify-center items-start">
+    <div
+      v-for="month in 12"
+      :key="month"
+      class="flex flex-col justify-center items-start"
+    >
       <div v-for="day in 31" :key="day">
-        <div v-for="(contrib, index) in intensityMap" :key="index">
+        <div
+          v-for="(contrib, index) in contributionsWithIntensity"
+          :key="index"
+        >
           <ContribSquare
             :intensity="contrib.intensity"
+            color="blue"
             v-if="contrib.day === day && contrib.month === month"
+            :index="`${day}/${month}`"
+          />
+          <ContribSquare
+            :intensity="0"
+            color="blue"
+            v-if="
+              contrib.intensity === 0 &&
+              contrib.day !== day &&
+              contrib.month !== month &&
+              month === index
+            "
+            :index="`${day}/${month} - ${index}`"
           />
         </div>
       </div>
     </div>
-
-    <!--    <pre>{{ contributions }}</pre>-->
   </div>
+  <pre>{{ contributionsWithIntensity }}</pre>
 </template>

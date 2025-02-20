@@ -6,12 +6,28 @@ export interface CommitDate {
   year: number;
 }
 
+export type ColorStep =
+  | 0
+  | 100
+  | 200
+  | 300
+  | 400
+  | 500
+  | 600
+  | 700
+  | 800
+  | 900
+  | 950;
+
 export interface CommitDateWithIntensity extends CommitDate {
-  intensity: 0 | 100 | 200 | 300 | 400 | 500 | 600 | 700 | 800 | 900 | 950;
+  intensity: ColorStep;
 }
+
+type StoredDates = { lastFetched: string; dates: CommitDate[] };
 
 export class GithubService {
   private octokit: Octokit;
+  private storageKey = "maxdlr-portfolio-commit-dates";
 
   constructor() {
     this.octokit = new Octokit({
@@ -19,7 +35,22 @@ export class GithubService {
     });
   }
 
-  public async getAllCommitDates() {
+  public async getAllCommitDates(force: boolean = false) {
+    const now = new Date();
+    let dates: CommitDate[] = [];
+    const stored: StoredDates = JSON.parse(
+      <string>localStorage.getItem(this.storageKey),
+    );
+
+    if (localStorage.getItem(this.storageKey)) {
+      const lastFetched: Date = new Date(stored.lastFetched);
+      const isTooSoon = lastFetched.getMonth() === now.getMonth();
+
+      if (isTooSoon && !force) {
+        return stored.dates;
+      }
+    }
+
     const repoNameIterator = this.octokit.paginate.iterator(
       this.octokit.rest.repos.listForAuthenticatedUser,
       {
@@ -28,8 +59,6 @@ export class GithubService {
         per_page: 100,
       },
     );
-
-    const dates: CommitDate[] = [];
 
     for await (const { data: repos } of repoNameIterator) {
       for (const repo of repos) {
@@ -46,6 +75,12 @@ export class GithubService {
         } catch {}
       }
     }
+
+    const storage: StoredDates = {
+      lastFetched: now.toJSON(),
+      dates: dates,
+    };
+    localStorage.setItem(this.storageKey, JSON.stringify(storage));
 
     return dates;
   }
@@ -104,32 +139,36 @@ export class GithubService {
     const frequencies = Object.values(groupedDates).map(
       (group) => group.length,
     );
+    console.log(frequencies);
     const minFreq = Math.min(...frequencies);
     const maxFreq = Math.max(...frequencies);
 
-    // Process each unique date and assign intensity
-    return dates.map((date) => {
-      const key = `${date.day}-${date.month}-${date.year}`;
-      const frequency = groupedDates[key].length;
+    return Object.entries(groupedDates).map(
+      (value: [string, CommitDate[]], index: number) => {
+        let intensity: CommitDateWithIntensity["intensity"];
+        const frequency = frequencies[index];
+        console.log(frequency);
 
-      // Calculate intensity based on whether it's min or max frequency
-      let intensity: CommitDateWithIntensity["intensity"];
-      if (frequency === maxFreq) {
-        intensity = 950;
-      } else if (frequency === minFreq) {
-        intensity = 100;
-      } else {
-        // Calculate intermediate intensity
-        const step = Math.floor(
-          ((frequency - minFreq) / (maxFreq - minFreq)) * 9,
-        );
-        intensity = (step * 100) as CommitDateWithIntensity["intensity"];
-      }
+        if (frequency === maxFreq) {
+          intensity = 950;
+        } else if (frequency === minFreq) {
+          intensity = 100;
+        } else {
+          // Calculate intermediate intensity
+          const step = Math.floor(
+            ((frequency - minFreq) / (maxFreq - minFreq)) * 5,
+          );
+          console.log(step);
+          intensity = (step * 100) as CommitDateWithIntensity["intensity"];
+        }
 
-      return {
-        ...date,
-        intensity,
-      };
-    });
+        return {
+          day: value[1][0].day,
+          month: value[1][0].month,
+          year: value[1][0].year,
+          intensity,
+        };
+      },
+    );
   }
 }

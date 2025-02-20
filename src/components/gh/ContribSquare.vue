@@ -1,31 +1,36 @@
 <script setup lang="ts">
-import { onMounted, PropType, ref } from "vue";
+import { onBeforeMount, PropType, Ref, ref } from "vue";
 
 const props = defineProps({
-  size: {
-    type: Number,
-    default: 10,
-  },
   intensity: {
     type: Number as PropType<
       0 | 100 | 200 | 300 | 400 | 500 | 600 | 700 | 800 | 900 | 950
     >,
+    default: 500,
   },
   color: {
     type: String,
-    default: "green",
+    default: "blue",
+  },
+  index: {
+    type: [Number, String],
   },
 });
 
-const bgIntensity = ref();
+const bgIntensity: Ref<number> = ref(0);
+const bgColor: Ref<string> = ref("");
 
-onMounted(() => {
+onBeforeMount(() => {
   bgIntensity.value = props.intensity;
+  bgColor.value = props.color;
 });
 </script>
 
 <template>
-  {{ intensity }}
-  <!--  <div :class="`w-[${size}px] h-[${size}px] bg-${color}-${intensity}`" />-->
-  <div :class="[`bg-blue-${bgIntensity}`, 'w-[30px]', 'h-[30px]']" />
+  <div
+    :class="[`w-[50px]`, `h-[50px]`, `bg-${bgColor}-${bgIntensity}`]"
+    class="flex justify-center items-center"
+  >
+    {{ index }}
+  </div>
 </template>
