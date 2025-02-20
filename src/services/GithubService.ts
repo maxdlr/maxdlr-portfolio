@@ -6,6 +6,10 @@ export interface CommitDate {
   year: number;
 }
 
+export interface CommitDateWithIntensity extends CommitDate {
+  intensity: 0 | 100 | 200 | 300 | 400 | 500 | 600 | 700 | 800 | 900 | 950;
+}
+
 export class GithubService {
   private octokit: Octokit;
 
@@ -78,5 +82,54 @@ export class GithubService {
   public async logIn() {
     await this.octokit.rest.users.getAuthenticated();
     return this;
+  }
+
+  public calculateDateIntensity(
+    dates: CommitDate[],
+  ): CommitDateWithIntensity[] {
+    // Group dates by their day/month/year combination
+    const groupedDates = dates.reduce(
+      (acc, date) => {
+        const key = `${date.day}-${date.month}-${date.year}`;
+        if (!acc[key]) {
+          acc[key] = [];
+        }
+        acc[key].push(date);
+        return acc;
+      },
+      {} as Record<string, CommitDate[]>,
+    );
+
+    // Calculate frequencies
+    const frequencies = Object.values(groupedDates).map(
+      (group) => group.length,
+    );
+    const minFreq = Math.min(...frequencies);
+    const maxFreq = Math.max(...frequencies);
+
+    // Process each unique date and assign intensity
+    return dates.map((date) => {
+      const key = `${date.day}-${date.month}-${date.year}`;
+      const frequency = groupedDates[key].length;
+
+      // Calculate intensity based on whether it's min or max frequency
+      let intensity: CommitDateWithIntensity["intensity"];
+      if (frequency === maxFreq) {
+        intensity = 950;
+      } else if (frequency === minFreq) {
+        intensity = 100;
+      } else {
+        // Calculate intermediate intensity
+        const step = Math.floor(
+          ((frequency - minFreq) / (maxFreq - minFreq)) * 9,
+        );
+        intensity = (step * 100) as CommitDateWithIntensity["intensity"];
+      }
+
+      return {
+        ...date,
+        intensity,
+      };
+    });
   }
 }
