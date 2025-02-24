@@ -47,7 +47,7 @@ export class GithubService {
       const isTooSoon = lastFetched.getMonth() === now.getMonth();
 
       if (isTooSoon && !force) {
-        return stored.dates;
+        return stored.dates.slice(0, 200);
       }
     }
 
@@ -63,7 +63,6 @@ export class GithubService {
     for await (const { data: repos } of repoNameIterator) {
       for (const repo of repos) {
         try {
-          console.log(repo.name);
           const commitDates: CommitDate[] = [];
           const commits = await this.getAllCommitsByRepo(repo.name);
 
@@ -119,11 +118,70 @@ export class GithubService {
     return this;
   }
 
+  private addMissingDaysToMonth(
+    dates: Record<string, CommitDate[]>,
+  ): Record<string, CommitDate[]> {
+    // const values = Object.values(dates);
+    // const entries = Object.entries(dates);
+    const keys = Object.keys(dates);
+    let sortedByMonth: Record<number, CommitDate[]> = {} as Record<
+      number,
+      CommitDate[]
+    >;
+    let sortedByDay: Record<number, CommitDate[]> = {} as Record<
+      number,
+      CommitDate[]
+    >;
+    let months: number[] = [];
+    let days: number[] = [];
+    let years: number[] = [];
+
+    for (let i = 1; i <= 31; i++) {
+      days.push(i);
+    }
+
+    for (let i = 1; i <= 12; i++) {
+      months.push(i);
+    }
+
+    years[0] = 2024;
+
+    for (let i = 0; i < keys.length; i++) {
+      const key = keys[i];
+      const matches = key.match(/(\d+)-(\d+)-(\d+)/);
+
+      if (matches) {
+        const matchedDay: number | null = matches[1]
+          ? parseInt(matches[1])
+          : null;
+        const matchedMonth: number | null = matches[2]
+          ? parseInt(matches[2])
+          : null;
+
+        days.forEach((day: number) => {
+          if (day === matchedDay) {
+            sortedByDay[day] = dates[key];
+          }
+        });
+
+        months.forEach((month: number) => {
+          if (month === matchedMonth) {
+            sortedByMonth[month] = dates[key];
+          }
+        });
+      }
+    }
+
+    console.log("sortedByMonth", sortedByMonth);
+    console.log("sortedByDay", sortedByDay);
+    return {};
+  }
+
   public calculateDateIntensity(
     dates: CommitDate[],
   ): CommitDateWithIntensity[] {
     // Group dates by their day/month/year combination
-    const groupedDates = dates.reduce(
+    let groupedDates = dates.reduce(
       (acc, date) => {
         const key = `${date.day}-${date.month}-${date.year}`;
         if (!acc[key]) {
@@ -139,7 +197,9 @@ export class GithubService {
     const frequencies = Object.values(groupedDates).map(
       (group) => group.length,
     );
-    console.log(frequencies);
+
+    groupedDates = this.addMissingDaysToMonth(groupedDates);
+
     const minFreq = Math.min(...frequencies);
     const maxFreq = Math.max(...frequencies);
 
@@ -147,7 +207,6 @@ export class GithubService {
       (value: [string, CommitDate[]], index: number) => {
         let intensity: CommitDateWithIntensity["intensity"];
         const frequency = frequencies[index];
-        console.log(frequency);
 
         if (frequency === maxFreq) {
           intensity = 950;
@@ -158,7 +217,6 @@ export class GithubService {
           const step = Math.floor(
             ((frequency - minFreq) / (maxFreq - minFreq)) * 5,
           );
-          console.log(step);
           intensity = (step * 100) as CommitDateWithIntensity["intensity"];
         }
 

@@ -45,6 +45,17 @@ const refresh = async () => {
     );
   isLoading.value = false;
 };
+
+const dateMatch = (
+  contrib: CommitDateWithIntensity,
+  now: CommitDate,
+): boolean => {
+  const isDay = contrib.day === now.day;
+  const isMonth = contrib.month === now.month;
+  const isYear = true;
+
+  return isDay && isMonth && isYear;
+};
 </script>
 
 <template>
@@ -79,21 +90,11 @@ const refresh = async () => {
           <ContribSquare
             :intensity="contrib.intensity"
             color="blue"
-            v-if="contrib.day === day && contrib.month === month"
+            v-if="dateMatch(contrib, { day, month, year: 2024 })"
             :index="`${day}/${month}`"
           />
-          <ContribSquare
-            :intensity="0"
-            color="blue"
-            v-if="
-              contrib.intensity === 0 &&
-              contrib.day !== day &&
-              contrib.month !== month &&
-              month === index
-            "
-            :index="`${day}/${month} - ${index}`"
-          />
         </div>
+        <!--        <ContribSquare :intensity="0" color="blue" :index="`${day}/${month}`" />-->
       </div>
     </div>
   </div>
