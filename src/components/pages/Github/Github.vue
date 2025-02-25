@@ -1,21 +1,19 @@
 <script lang="ts" setup>
 import { onMounted, Ref, ref } from "vue";
 import {
-  CommitDate,
   CommitDateWithIntensity,
   GithubService,
 } from "../../../services/GithubService.ts";
 import Loader from "../../atoms/Loader.vue";
 import ContribSquare from "../../gh/ContribSquare.vue";
 
-const contributions: Ref<CommitDate[]> = ref([]);
+const contributions: Ref<CommitDateWithIntensity[]> = ref([]);
 const isLoading: Ref<boolean> = ref(false);
 const githubService = new GithubService();
-const contributionsWithIntensity: Ref<CommitDateWithIntensity[]> = ref([]);
 const weekFirstDays: Ref<number[]> = ref([]);
 
 const buildWeekFirstDays = () => {
-  const totalDays: number = contributionsWithIntensity.value.length;
+  const totalDays: number = contributions.value.length;
   const weeksCount: number = Math.floor(totalDays / 8);
   const firstDays: number[] = [];
 
@@ -23,38 +21,20 @@ const buildWeekFirstDays = () => {
   for (let i = 1; i < weeksCount; i++) {
     firstDays.push(Math.floor(totalDays / (weeksCount / i)));
   }
-
-  console.log(firstDays);
-
   weekFirstDays.value = firstDays;
 };
 
 onMounted(async () => {
-  isLoading.value = true;
   await refresh();
-
-  contributionsWithIntensity.value = githubService.calculateDateIntensity(
-    contributions.value,
-  );
-  buildWeekFirstDays();
-  isLoading.value = false;
+  // console.log(contributions.value);
 });
 
 const refresh = async () => {
   isLoading.value = true;
-  contributions.value = await githubService.getAllCommitDates();
+  contributions.value =
+    await githubService.GetAllActivityDatesWithIntensity(false);
+  buildWeekFirstDays();
   isLoading.value = false;
-};
-
-const dateMatch = (
-  contrib: CommitDateWithIntensity,
-  now: CommitDate,
-): boolean => {
-  const isDay = contrib.day === now.day;
-  const isMonth = contrib.month === now.month;
-  const isYear = true;
-
-  return isDay && isMonth && isYear;
 };
 </script>
 
@@ -76,36 +56,50 @@ const dateMatch = (
     <Loader />
   </div>
 
-  <div v-else class="flex">
-    <!--    <div class="flex flex-col gap-96">-->
-    <!--    <div v-for="year in [2023, 2024, 2025]">-->
-    <div v-for="month in 12" :key="month" class="flex">
+  <div v-else>
+    <div v-for="(contrib, index) in contributions" :key="index">
       <div
-        v-for="(week, index) in weekFirstDays"
+        v-for="(weekFirstDay, index) in weekFirstDays"
         :key="index"
         class="flex flex-col"
       >
-        <div v-for="day in 31" :key="day">
-          <div v-if="day >= week && day < weekFirstDays[index + 1]">
-            <div>
-              <div
-                v-for="(contrib, index) in contributionsWithIntensity"
-                :key="index"
-              >
-                <ContribSquare
-                  v-if="dateMatch(contrib, { day, month, year: 2024 })"
-                  :index="`${day}/${month}/${2024}`"
-                  :intensity="contrib.intensity"
-                  class="m-[2px]"
-                  color="blue"
-                />
-              </div>
-            </div>
-          </div>
-          <!--          </div>-->
-          <!--          </div>-->
-        </div>
+        <ContribSquare
+          :contrib="contrib"
+          :intensity="contrib.intensity"
+          v-if="
+            contrib.day >= weekFirstDay &&
+            contrib.day < weekFirstDays[index + 1]
+          "
+          :index="`${contrib.id} - ${contrib.day}/${contrib.month}`"
+        />
       </div>
     </div>
+
+    <!--    <div v-for="year in [2024, 2025]" class="w-full">-->
+    <!--      <div v-for="month in 12" :key="month" class="flex w-full">-->
+    <!--        <div-->
+    <!--          v-for="(week, index) in weekFirstDays"-->
+    <!--          :key="index"-->
+    <!--          class="flex flex-col border border-black"-->
+    <!--        >-->
+    <!--          <div v-for="day in 31" :key="day">-->
+    <!--            <div v-if="day >= week && day < weekFirstDays[index + 1]">-->
+    <!--              <div-->
+    <!--                v-for="(contrib, index) in contributionsWithIntensity"-->
+    <!--                :key="index"-->
+    <!--              >-->
+    <!--                <ContribSquare-->
+    <!--                  v-if="dateMatch(contrib, { day, month, year })"-->
+    <!--                  :index="`${day}/${month}/${year}`"-->
+    <!--                  :intensity="contrib.intensity"-->
+    <!--                  class="m-[2px]"-->
+    <!--                  color="blue"-->
+    <!--                />-->
+    <!--              </div>-->
+    <!--            </div>-->
+    <!--          </div>-->
+    <!--        </div>-->
+    <!--      </div>-->
+    <!--    </div>-->
   </div>
 </template>
