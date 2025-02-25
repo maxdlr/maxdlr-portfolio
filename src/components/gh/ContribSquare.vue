@@ -1,4 +1,4 @@
-<script setup lang="ts">
+<script lang="ts" setup>
 import { onBeforeMount, PropType, Ref, ref } from "vue";
 
 const props = defineProps({
@@ -28,9 +28,7 @@ onBeforeMount(() => {
 
 <template>
   <div
-    :class="[`w-[50px]`, `h-[50px]`, `bg-${bgColor}-${bgIntensity}`]"
-    class="flex justify-center items-center"
-  >
-    {{ index }}
-  </div>
+    :class="[`bg-${bgColor}-${bgIntensity}`]"
+    class="flex justify-center items-center h-[20px] w-[20px] rounded"
+  />
 </template>
