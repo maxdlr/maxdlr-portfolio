@@ -19,7 +19,7 @@
     "lodash": "^4.17.21",
     "marked": "^15.0.6",
     "marked-shiki": "^1.2.0",
-    "octokit": "^4.0.2",
+    "octokit": "^4.1.2",
     "postcss-combine-duplicated-selectors": "^10.0.3",
     "postcss-sort-media-queries": "^5.2.0",
     "undici": "^7.3.0",

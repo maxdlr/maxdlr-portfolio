@@ -17,6 +17,7 @@ import { computed, onBeforeMount, Ref, ref } from "vue";
 import data from "../../model/data.json";
 import { usePageHead } from "../../composables/usePageHead.ts";
 import { useI18n } from "vue-i18n";
+import GithubContributions from "./Github/GithubContributions.vue";
 
 const { locale } = useI18n({ useScope: "global" });
 
@@ -160,6 +161,10 @@ const gifSize = computed(() => data["footer-wip"].gif.size);
         </a>
       </div>
     </section>
+    <div class="w-fit h-fit mx-auto">
+      <GithubContributions class="my-5 rounded-2xl overflow-hidden" />
+    </div>
+
     <div class="text-center my-5">
       <p>{{ $t("bye") }}</p>
     </div>
