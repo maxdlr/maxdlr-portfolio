@@ -95,7 +95,10 @@ export class GithubService {
       this.getReposForAuthenticatedUserIterator(),
       async (repo: GhRepo) => {
         const repoName = repo.name;
-        if (!this.cookieService.cookie.badRepos.includes(repoName)) {
+        if (
+          !this.cookieService.cookie.badRepos ||
+          !this.cookieService.cookie.badRepos.includes(repoName)
+        ) {
           try {
             fetchedCommits.push(...(await this.getAllCommitsByRepo(repoName)));
           } catch {
