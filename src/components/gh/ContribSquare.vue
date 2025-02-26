@@ -29,7 +29,7 @@ onBeforeMount(() => {
 <template>
   <div
     :class="[`bg-${bgColor}-${bgIntensity}`]"
-    class="flex justify-center items-center h-[100px] w-[100px] rounded"
+    class="flex justify-center items-center h-[15px] w-[15px] rounded"
   >
     {{ index }}
   </div>
