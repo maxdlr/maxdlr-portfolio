@@ -112,7 +112,11 @@ export class GithubService {
   }
 
   public async getAllCommitsByRepo(repo: string): Promise<GhCommit[]> {
-    return this.iterateFetch(this.getCommitsByRepoIterator(repo));
+    try {
+      return this.iterateFetch(this.getCommitsByRepoIterator(repo));
+    } catch (error: any) {
+      throw new Error(error.message);
+    }
   }
 
   private async iterateFetch(
