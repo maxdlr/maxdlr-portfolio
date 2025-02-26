@@ -1,13 +1,11 @@
 <script lang="ts" setup>
 import { onMounted, Ref, ref } from "vue";
 import {
-  CommitDate,
   CommitDateWithIntensity,
   GithubService,
 } from "../../../services/GithubService.ts";
 import Loader from "../../atoms/Loader.vue";
 import ContribSquare from "../../gh/ContribSquare.vue";
-import { ContributionsProcessor } from "../../../composables/processors/ContributionsProcessor.ts";
 
 const contribs: Ref<CommitDateWithIntensity[]> = ref([]);
 const contribsByWeek: Ref<Record<number, CommitDateWithIntensity[]>> = ref([]);
@@ -50,12 +48,7 @@ onMounted(async () => {
 
 const refresh = async () => {
   isLoading.value = true;
-  const contribDates: CommitDate[] =
-    await githubService.GetAllActivityDatesWithIntensity(false);
-  const contribProcessor = new ContributionsProcessor();
-  const contribDatesWithIntensity =
-    contribProcessor.calculateDateIntensity(contribDates);
-  contribs.value = contribProcessor.sortDates(contribDatesWithIntensity);
+  contribs.value = await githubService.getAllContributions(true);
   buildWeekFirstDays();
   isLoading.value = false;
 };

@@ -185,12 +185,12 @@ export class ContributionsProcessor {
     return { day, month, year };
   }
 
-  public getEventDate(event, id: number): CommitDate {
+  public getEventDate(event): CommitDate {
     const date: Date = new Date(event.created_at);
     const day = date.getDate();
     const month = date.getMonth() + 1;
     const year = date.getFullYear();
 
-    return { id, day, month, year };
+    return { day, month, year };
   }
 }

@@ -1,5 +1,6 @@
 import { Octokit } from "octokit";
 import { ContributionsProcessor } from "../composables/processors/ContributionsProcessor.ts";
+import { CookieService } from "./CookieService.ts";
 
 export interface CommitDate {
   id?: number;
@@ -25,29 +26,21 @@ export interface CommitDateWithIntensity extends CommitDate {
   intensity?: ColorStep;
 }
 
-type StoredDates = {
-  lastFetched: string;
-  dates: CommitDate[];
-  badRepos: string[];
-};
-
 export class GithubService {
   private octokit: Octokit;
-  private storageKey = "maxdlr-portfolio-commit-dates";
-  private cookie: StoredDates;
+  private cookieService: CookieService;
   private contributionProcessor: ContributionsProcessor;
+  public username: string = "maxdlr";
+  private header: { accept: string } = {
+    accept: "application/vnd.github+json",
+  };
 
   constructor() {
     this.octokit = new Octokit({
       auth: import.meta.env.VITE_GITHUB_API_TOKEN,
     });
-
-    if (localStorage.getItem(this.storageKey)) {
-      this.cookie = JSON.parse(<string>localStorage.getItem(this.storageKey));
-    } else {
-      this.cookie = {} as StoredDates;
-    }
     this.contributionProcessor = new ContributionsProcessor();
+    this.cookieService = new CookieService();
   }
 
   public async logIn() {
@@ -55,102 +48,89 @@ export class GithubService {
     return this;
   }
 
-  public async GetAllActivityDatesWithIntensity(
+  public async getAllContributions(
     force: boolean = false,
   ): Promise<CommitDateWithIntensity[]> {
     let dates: CommitDateWithIntensity[] = [];
-    if (!this.isCookieDeprecated() && !force) {
-      dates = this.cookie.dates;
+    if (!this.cookieService.isCookieDeprecated() && !force) {
+      dates = this.cookieService.cookie.dates;
     } else {
-      await Promise.all([this.getAllCommitDates(), this.getEventDates()]).then(
-        (result) => result.forEach((part) => dates.push(...part)),
+      await this.logIn();
+      await Promise.all([this.getAllCommits(), this.getEvents()]).then(
+        (result) => {
+          const commitDates = result[0]?.map((commit) =>
+            this.contributionProcessor.getCommitDate(commit),
+          );
+          const eventDates = result[1]?.map((event) =>
+            this.contributionProcessor.getEventDate(event),
+          );
+          [commitDates, eventDates].forEach((part) => dates.push(...part));
+        },
       );
     }
 
-    this.setCookie(dates);
+    dates = this.contributionProcessor.calculateDateIntensity(dates);
+    dates = this.contributionProcessor.sortDates(dates);
+
+    this.cookieService.setCookie(dates);
 
     return dates;
   }
 
-  public async getEventDates(): Promise<CommitDate[]> {
-    await this.logIn();
-    const eventIterator = this.getEventsForAuthenticatedUserIterator();
+  public async getEvents(): Promise<unknown[]> {
+    const fetchedEvents: unknown[] = await this.iterateFetch(
+      this.getEventsForAuthenticatedUserIterator(),
+    );
+    const fetchedReceivedEvents = await this.iterateFetch(
+      this.getReceivedEventsForAuthenticatedUserIterator(),
+    );
 
-    const fetchedEvents = [];
-    for await (const { data: events } of eventIterator) {
-      for (const event of events) {
-        fetchedEvents.push(this.contributionProcessor.getEventDate(event, 0));
-      }
-    }
-
-    const eventReceivedIterator =
-      this.getReceivedEventsForAuthenticatedUserIterator();
-
-    const fetchedReceivedEvents = [];
-    for await (const { data: events } of eventReceivedIterator) {
-      for (const event of events) {
-        fetchedReceivedEvents.push(
-          this.contributionProcessor.getEventDate(event, 0),
-        );
-      }
-    }
-
-    return fetchedEvents;
+    return [...fetchedEvents, ...fetchedReceivedEvents];
   }
 
-  public async getAllCommitDates() {
-    const dates = [];
-    await this.logIn();
+  public async getAllCommits(): Promise<unknown[]> {
+    let fetchedCommits: unknown[] = [];
 
-    const repoNameIterator = this.getReposForAuthenticatedUserIterator();
-
-    for await (const { data: repos } of repoNameIterator) {
-      for (const repo of repos) {
+    await this.iterateFetch(
+      this.getReposForAuthenticatedUserIterator(),
+      async (repo: any) => {
         const repoName = repo.name;
-
-        if (!this.cookie.badRepos.includes(repoName)) {
+        if (!this.cookieService.cookie.badRepos.includes(repoName)) {
           try {
-            const commitDates: CommitDate[] = [];
-            const commits = await this.getAllCommitsByRepo(repoName);
-
-            commits.forEach((commit) => {
-              commitDates.push(
-                this.contributionProcessor.getCommitDate(commit),
-              );
-            });
-
-            dates.push(...commitDates);
+            fetchedCommits.push(...(await this.getAllCommitsByRepo(repoName)));
           } catch {
-            this.cookie.badRepos.push(repo.name);
+            this.cookieService.cookie.badRepos.push(repo.name);
           }
         }
-      }
-    }
+      },
+    );
 
-    return dates;
+    return fetchedCommits;
   }
 
   public async getAllCommitsByRepo(repo: string): Promise<{}[]> {
-    try {
-      const iterator = this.getCommitsByRepoIterator(repo);
-      const result = [];
-      for await (const { data: commits } of iterator) {
-        for (const commit of commits) {
-          result.push(commit);
-        }
+    return this.iterateFetch(this.getCommitsByRepoIterator(repo));
+  }
+
+  private async iterateFetch(
+    iterator: AsyncIterable<any>,
+    action?: (item: any) => void,
+  ) {
+    const result = [];
+    for await (const { data } of iterator) {
+      for (const item of data) {
+        action ? action(item) : result.push(item);
       }
-      return result;
-    } catch {
-      throw new Error(`Could not get all commits from ${repo}`);
     }
+    return result;
   }
 
   private getEventsForAuthenticatedUserIterator() {
     return this.octokit.paginate.iterator(
       this.octokit.rest.activity.listEventsForAuthenticatedUser,
       {
-        accept: "application/vnd.github+json",
-        username: "maxdlr",
+        accept: this.header.accept,
+        username: this.username,
         all: true,
         per_page: 100,
       },
@@ -161,8 +141,8 @@ export class GithubService {
     return this.octokit.paginate.iterator(
       this.octokit.rest.activity.listReceivedEventsForUser,
       {
-        accept: "application/vnd.github+json",
-        username: "maxdlr",
+        accept: this.header.accept,
+        username: this.username,
         all: true,
         per_page: 100,
       },
@@ -171,10 +151,10 @@ export class GithubService {
 
   private getCommitsByRepoIterator(repositoryName: string) {
     return this.octokit.paginate.iterator(this.octokit.rest.repos.listCommits, {
-      accept: "application/vnd.github+json",
-      owner: "maxdlr",
-      author: "maxdlr",
-      committer: "maxdlr",
+      accept: this.header.accept,
+      owner: this.username,
+      author: this.username,
+      committer: this.username,
       repo: repositoryName,
       per_page: 100,
     });
@@ -184,24 +164,10 @@ export class GithubService {
     return this.octokit.paginate.iterator(
       this.octokit.rest.repos.listForAuthenticatedUser,
       {
-        accept: "application/vnd.github+json",
-        username: "maxdlr",
+        accept: this.header.accept,
+        username: this.username,
         per_page: 100,
       },
     );
-  }
-
-  private setCookie(dates: CommitDate[]) {
-    const now = new Date();
-    if (!this.cookie) this.cookie = {} as StoredDates;
-    this.cookie.lastFetched = now.toJSON();
-    this.cookie.dates = dates;
-    localStorage.setItem(this.storageKey, JSON.stringify(this.cookie));
-  }
-
-  private isCookieDeprecated(): boolean {
-    const now = new Date();
-    const lastFetched: Date = new Date(this.cookie.lastFetched);
-    return lastFetched.getMonth() !== now.getMonth();
   }
 }
