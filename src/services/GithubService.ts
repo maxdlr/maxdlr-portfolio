@@ -69,10 +69,9 @@ export class GithubService {
       );
     }
 
+    this.cookieService.setCookie(dates);
     dates = this.contributionProcessor.calculateDateIntensity(dates);
     dates = this.contributionProcessor.sortDates(dates);
-
-    this.cookieService.setCookie(dates);
 
     return dates;
   }

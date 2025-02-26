@@ -27,12 +27,16 @@ defineProps({
       :href="url"
       :target="target ?? ''"
     >
-      <component :is="icon" v-if="icon" />
-      <span v-if="label">{{ label }}</span>
+      <slot>
+        <component :is="icon" v-if="icon" />
+        <span v-if="label">{{ label }}</span>
+      </slot>
     </a>
     <button v-else :class="`uk-button uk-button-${variant} ${extraClass}`">
-      <component :is="icon" v-if="icon" />
-      <span v-if="label">{{ label }}</span>
+      <slot>
+        <component :is="icon" v-if="icon" />
+        <span v-if="label">{{ label }}</span>
+      </slot>
     </button>
   </div>
 </template>

@@ -10,26 +10,32 @@ const props = defineProps({
   },
   color: {
     type: String,
-    default: "blue",
+    default: "gray",
   },
   index: {
     type: [Number, String],
+  },
+  size: {
+    type: Number,
+    default: 15,
   },
 });
 
 const bgIntensity: Ref<number> = ref(0);
 const bgColor: Ref<string> = ref("");
+const bgSize: Ref<number> = ref(0);
 
 onBeforeMount(() => {
   bgIntensity.value = props.intensity;
   bgColor.value = props.color;
+  bgSize.value = props.size;
 });
 </script>
 
 <template>
   <div
     :class="[`bg-${bgColor}-${bgIntensity}`]"
-    class="flex justify-center items-center h-[15px] w-[15px] rounded"
+    class="flex justify-center items-center rounded h-[10px] w-[10px]"
   >
     {{ index }}
   </div>

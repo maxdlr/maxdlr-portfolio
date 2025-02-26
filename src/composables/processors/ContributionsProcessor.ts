@@ -47,10 +47,10 @@ export class ContributionsProcessor {
         const frequency: number = frequencies[index];
 
         if (minFreq === maxFreq) {
-          intensity = 500;
+          intensity = 400;
         } else {
           const normalized =
-            ((frequency - minFreq) / (maxFreq - minFreq) + 0.09) * 1.3;
+            ((frequency - minFreq) / (maxFreq - minFreq) + 0.13) * 2.19;
 
           const stepIndex = Math.round(
             normalized * (intensitySteps.length + 1),
