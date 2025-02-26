@@ -1,6 +1,7 @@
 import { Octokit } from "octokit";
 import { ContributionsProcessor } from "../composables/processors/ContributionsProcessor.ts";
 import { CookieService } from "./CookieService.ts";
+import { GhCommit, GhEvent, GhRepo } from "../interface/Github.ts";
 
 export interface CommitDate {
   id?: number;
@@ -58,10 +59,10 @@ export class GithubService {
       await this.logIn();
       await Promise.all([this.getAllCommits(), this.getEvents()]).then(
         (result) => {
-          const commitDates = result[0]?.map((commit) =>
+          const commitDates = result[0]?.map((commit: GhCommit) =>
             this.contributionProcessor.getCommitDate(commit),
           );
-          const eventDates = result[1]?.map((event) =>
+          const eventDates = result[1]?.map((event: GhEvent) =>
             this.contributionProcessor.getEventDate(event),
           );
           [commitDates, eventDates].forEach((part) => dates.push(...part));
@@ -76,8 +77,8 @@ export class GithubService {
     return dates;
   }
 
-  public async getEvents(): Promise<unknown[]> {
-    const fetchedEvents: unknown[] = await this.iterateFetch(
+  public async getEvents(): Promise<GhEvent[]> {
+    const fetchedEvents: GhEvent[] = await this.iterateFetch(
       this.getEventsForAuthenticatedUserIterator(),
     );
     const fetchedReceivedEvents = await this.iterateFetch(
@@ -87,12 +88,12 @@ export class GithubService {
     return [...fetchedEvents, ...fetchedReceivedEvents];
   }
 
-  public async getAllCommits(): Promise<unknown[]> {
-    let fetchedCommits: unknown[] = [];
+  public async getAllCommits(): Promise<GhCommit[]> {
+    let fetchedCommits: GhCommit[] = [];
 
     await this.iterateFetch(
       this.getReposForAuthenticatedUserIterator(),
-      async (repo: any) => {
+      async (repo: GhRepo) => {
         const repoName = repo.name;
         if (!this.cookieService.cookie.badRepos.includes(repoName)) {
           try {
@@ -107,7 +108,7 @@ export class GithubService {
     return fetchedCommits;
   }
 
-  public async getAllCommitsByRepo(repo: string): Promise<{}[]> {
+  public async getAllCommitsByRepo(repo: string): Promise<GhCommit[]> {
     return this.iterateFetch(this.getCommitsByRepoIterator(repo));
   }
 
