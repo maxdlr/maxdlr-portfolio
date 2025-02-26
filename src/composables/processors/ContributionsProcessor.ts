@@ -176,7 +176,9 @@ export class ContributionsProcessor {
     return dates;
   }
 
-  public getCommitDate(commit): CommitDate {
+  public getCommitDate(commit: {
+    commit: { committer: { date: string } };
+  }): CommitDate {
     const date: Date = new Date(commit.commit.committer.date);
     const day = date.getDate();
     const month = date.getMonth() + 1;
@@ -185,7 +187,7 @@ export class ContributionsProcessor {
     return { day, month, year };
   }
 
-  public getEventDate(event): CommitDate {
+  public getEventDate(event: { created_at: string }): CommitDate {
     const date: Date = new Date(event.created_at);
     const day = date.getDate();
     const month = date.getMonth() + 1;
