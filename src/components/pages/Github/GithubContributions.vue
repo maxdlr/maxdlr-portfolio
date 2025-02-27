@@ -1,11 +1,9 @@
 <script lang="ts" setup>
 import { onMounted, Ref, ref } from "vue";
-import {
-  CommitDateWithIntensity,
-  GithubService,
-} from "../../../services/GithubService.ts";
+import { GithubService } from "../../../services/GithubService.ts";
 import Loader from "../../atoms/Loader.vue";
 import ContribSquare from "../../gh/ContribSquare.vue";
+import { CommitDateWithIntensity } from "../../../interface/Github.ts";
 
 const contribs: Ref<CommitDateWithIntensity[]> = ref([]);
 const contribsByWeek: Ref<Record<number, CommitDateWithIntensity[]>> = ref([]);

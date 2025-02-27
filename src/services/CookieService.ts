@@ -1,4 +1,4 @@
-import { CommitDate } from "./GithubService.ts";
+import { CommitDate } from "../interface/Github.ts";
 
 type StoredDates = {
   lastFetched: Date | string;
