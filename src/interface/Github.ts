@@ -10,6 +10,12 @@ export interface GhRepo {
   name: string;
 }
 
+export interface GhOrg {
+  organization: {
+    login: string;
+  };
+}
+
 export interface CommitDate {
   id?: number;
   day: number;

@@ -51,7 +51,7 @@ onMounted(async () => {
 
 const refresh = async () => {
   isLoading.value = true;
-  contribs.value = await githubService.getAllContributions(false);
+  contribs.value = await githubService.getAllContributions(true);
   buildWeekFirstDays();
   isLoading.value = false;
 };
