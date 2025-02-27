@@ -1,4 +1,4 @@
-import franken from 'franken-ui/shadcn-ui/preset-quick';
+import franken from "franken-ui/shadcn-ui/preset-quick";
 
 /** @type {import('tailwindcss').Config} */
 export default {
@@ -6,11 +6,11 @@ export default {
   content: ["./index.html", "./src/**/*.{vue,js,ts,jsx,tsx}"],
   safelist: [
     {
-      pattern: /^uk-/
+      pattern: /^uk-/,
     },
-    'ProseMirror',
-    'ProseMirror-focused',
-    'tiptap'
+    "ProseMirror",
+    "ProseMirror-focused",
+    "tiptap",
   ],
   theme: {
     extend: {},

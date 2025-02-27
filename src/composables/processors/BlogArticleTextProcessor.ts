@@ -241,7 +241,7 @@ export class BlogArticleTextProcessor {
 
   private editAnchorLinks(): void {
     const as = this.doc.getElementsByTagName("a");
-    for (let a of as) {
+    for (const a of as) {
       const url: URL = new URL(a.href);
       if (url.origin === "https://docs.maxdlr.com" && url.hash !== "") {
         a.href = url.hash;

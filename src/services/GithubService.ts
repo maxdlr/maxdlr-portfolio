@@ -1,31 +1,12 @@
 import { Octokit } from "octokit";
 import { ContributionsProcessor } from "../composables/processors/ContributionsProcessor.ts";
 import { CookieService } from "./CookieService.ts";
-import { GhCommit, GhEvent, GhRepo } from "../interface/Github.ts";
-
-export interface CommitDate {
-  id?: number;
-  day: number;
-  month: number;
-  year: number;
-}
-
-export type ColorStep =
-  | 0
-  | 100
-  | 200
-  | 300
-  | 400
-  | 500
-  | 600
-  | 700
-  | 800
-  | 900
-  | 950;
-
-export interface CommitDateWithIntensity extends CommitDate {
-  intensity?: ColorStep;
-}
+import {
+  CommitDateWithIntensity,
+  GhCommit,
+  GhEvent,
+  GhRepo,
+} from "../interface/Github.ts";
 
 export class GithubService {
   public username: string = "maxdlr";

@@ -1,10 +1,12 @@
 import { Utils } from "../Utils.ts";
+
 import {
   ColorStep,
   CommitDate,
   CommitDateWithIntensity,
-} from "../../services/GithubService.ts";
-import { GhCommit, GhEvent } from "../../interface/Github.ts";
+  GhCommit,
+  GhEvent,
+} from "../../interface/Github.ts";
 
 export class ContributionsProcessor {
   private years = [2023, 2024, 2025];
@@ -69,6 +71,49 @@ export class ContributionsProcessor {
         };
       },
     );
+  }
+
+  public sortDates(
+    dates: CommitDateWithIntensity[],
+  ): CommitDateWithIntensity[] {
+    dates = dates.sort(
+      (a: CommitDateWithIntensity, b: CommitDateWithIntensity) => {
+        return a.day - b.day;
+      },
+    );
+    dates = dates.sort(
+      (a: CommitDateWithIntensity, b: CommitDateWithIntensity) => {
+        return a.month - b.month;
+      },
+    );
+    dates = dates.sort(
+      (a: CommitDateWithIntensity, b: CommitDateWithIntensity) => {
+        return a.year - b.year;
+      },
+    );
+
+    dates.forEach((date: CommitDateWithIntensity, index: number) => {
+      date.id = index;
+    });
+    return dates;
+  }
+
+  public getCommitDate(commit: GhCommit): CommitDate {
+    const date: Date = new Date(commit.commit.committer.date);
+    const day = date.getDate();
+    const month = date.getMonth() + 1;
+    const year = date.getFullYear();
+
+    return { day, month, year };
+  }
+
+  public getEventDate(event: GhEvent): CommitDate {
+    const date: Date = new Date(event.created_at);
+    const day = date.getDate();
+    const month = date.getMonth() + 1;
+    const year = date.getFullYear();
+
+    return { day, month, year };
   }
 
   private addMissingDaysToMonth(
@@ -150,48 +195,5 @@ export class ContributionsProcessor {
       });
     });
     return dates;
-  }
-
-  public sortDates(
-    dates: CommitDateWithIntensity[],
-  ): CommitDateWithIntensity[] {
-    dates = dates.sort(
-      (a: CommitDateWithIntensity, b: CommitDateWithIntensity) => {
-        return a.day - b.day;
-      },
-    );
-    dates = dates.sort(
-      (a: CommitDateWithIntensity, b: CommitDateWithIntensity) => {
-        return a.month - b.month;
-      },
-    );
-    dates = dates.sort(
-      (a: CommitDateWithIntensity, b: CommitDateWithIntensity) => {
-        return a.year - b.year;
-      },
-    );
-
-    dates.forEach((date: CommitDateWithIntensity, index: number) => {
-      date.id = index;
-    });
-    return dates;
-  }
-
-  public getCommitDate(commit: GhCommit): CommitDate {
-    const date: Date = new Date(commit.commit.committer.date);
-    const day = date.getDate();
-    const month = date.getMonth() + 1;
-    const year = date.getFullYear();
-
-    return { day, month, year };
-  }
-
-  public getEventDate(event: GhEvent): CommitDate {
-    const date: Date = new Date(event.created_at);
-    const day = date.getDate();
-    const month = date.getMonth() + 1;
-    const year = date.getFullYear();
-
-    return { day, month, year };
   }
 }
