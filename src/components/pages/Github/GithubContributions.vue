@@ -53,7 +53,7 @@ onMounted(async () => {
 
 const refresh = async () => {
   isLoading.value = true;
-  contribs.value = await githubService.getAllContributions(true);
+  contribs.value = await githubService.getAllContributions(false);
   buildWeekFirstDays();
   isLoading.value = false;
 };
@@ -80,12 +80,12 @@ const gap = "gap-[1px]";
     </div>
 
     <div v-else>
-      <div class="flex justify-center items-start m-0 p-0" :class="gap">
+      <div :class="gap" class="flex justify-center items-start m-0 p-0">
         <div
           v-for="(week, index) in contribsByWeek"
           :key="index"
-          class="flex flex-col p-0 m-0"
           :class="gap"
+          class="flex flex-col p-0 m-0"
         >
           <div v-if="week.length >= 5">
             <div
@@ -94,8 +94,8 @@ const gap = "gap-[1px]";
               class="m-0 p-0 w-[10px] h-[10px]"
             >
               <div
-                class="m-0 p-0"
                 :data-uk-tooltip="`title: ${contrib.day}/${contrib.month}/${contrib.year}; animation: slide-bottom`"
+                class="m-0 p-0"
               >
                 <ContribSquare
                   :contrib="contrib"

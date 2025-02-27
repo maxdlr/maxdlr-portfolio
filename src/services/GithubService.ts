@@ -28,13 +28,14 @@ export interface CommitDateWithIntensity extends CommitDate {
 }
 
 export class GithubService {
+  public username: string = "maxdlr";
   private octokit: Octokit;
   private cookieService: CookieService;
   private contributionProcessor: ContributionsProcessor;
-  public username: string = "maxdlr";
   private header: { accept: string } = {
     accept: "application/vnd.github+json",
   };
+  private excludeRepoList: string[] = ["old"];
 
   constructor() {
     this.octokit = new Octokit({
@@ -70,7 +71,9 @@ export class GithubService {
       );
     }
 
-    this.cookieService.setCookie(dates);
+    this.cookieService.setCookie({
+      dates,
+    });
     dates = this.contributionProcessor.calculateDateIntensity(dates);
     dates = this.contributionProcessor.sortDates(dates);
 
@@ -89,20 +92,20 @@ export class GithubService {
   }
 
   public async getAllCommits(): Promise<GhCommit[]> {
-    let fetchedCommits: GhCommit[] = [];
+    const fetchedCommits: GhCommit[] = [];
 
     await this.iterateFetch(
       this.getReposForAuthenticatedUserIterator(),
       async (repo: GhRepo) => {
         const repoName = repo.name;
         if (
-          !this.cookieService.cookie.badRepos ||
-          !this.cookieService.cookie.badRepos.includes(repoName)
+          !this.cookieService.cookie.badRepos.includes(repoName) &&
+          !this.excludeRepoList.includes(repoName)
         ) {
           try {
             fetchedCommits.push(...(await this.getAllCommitsByRepo(repoName)));
           } catch {
-            this.cookieService.cookie.badRepos.push(repo.name);
+            this.cookieService.cookie.badRepos.push(repoName);
           }
         }
       },
@@ -112,11 +115,7 @@ export class GithubService {
   }
 
   public async getAllCommitsByRepo(repo: string): Promise<GhCommit[]> {
-    try {
-      return this.iterateFetch(this.getCommitsByRepoIterator(repo));
-    } catch (error: any) {
-      throw new Error(error.message);
-    }
+    return this.iterateFetch(this.getCommitsByRepoIterator(repo));
   }
 
   private async iterateFetch(
@@ -124,12 +123,16 @@ export class GithubService {
     action?: (item: any) => void,
   ) {
     const result = [];
-    for await (const { data } of iterator) {
-      for (const item of data) {
-        action ? action(item) : result.push(item);
+    try {
+      for await (const fetched of iterator) {
+        for (const item of fetched.data) {
+          action ? action(item) : result.push(item);
+        }
       }
+      return result;
+    } catch (error: any) {
+      throw new Error(error.message);
     }
-    return result;
   }
 
   private getEventsForAuthenticatedUserIterator() {
