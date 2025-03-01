@@ -12,7 +12,7 @@ import {
   BIconVimeo,
 } from "bootstrap-icons-vue";
 import { useClipboard } from "@vueuse/core";
-import { computed, onBeforeMount, Ref, ref } from "vue";
+import { onBeforeMount, Ref, ref } from "vue";
 import data from "../../model/data.json";
 import { usePageHead } from "../../composables/usePageHead.ts";
 import { useI18n } from "vue-i18n";
@@ -50,8 +50,6 @@ const socials = ref([
     url: data["social-links"].vimeo,
   },
 ]);
-
-const gifSize = computed(() => data["footer-wip"].gif.size);
 </script>
 
 <template>
