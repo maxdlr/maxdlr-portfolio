@@ -37,4 +37,10 @@ export class CookieService {
     const daysDifference = timeDifference / (1000 * 60 * 60 * 24);
     return daysDifference >= 7;
   }
+
+  public deleteCookie() {
+    if (localStorage.getItem(this.storageKey)) {
+      localStorage.removeItem(this.storageKey);
+    }
+  }
 }
