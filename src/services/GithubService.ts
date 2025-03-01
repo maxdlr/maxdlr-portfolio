@@ -236,9 +236,12 @@ export class GithubService {
   private handleErrors(iterator: () => AsyncIterable<any>): AsyncIterable<any> {
     try {
       return iterator();
-    } catch (error) {
-      console.log(error);
-      throw new Error(error.message);
+    } catch (error: unknown) {
+      if (error instanceof Error) {
+        throw new Error(error.message);
+      } else {
+        throw error;
+      }
     }
   }
 }
