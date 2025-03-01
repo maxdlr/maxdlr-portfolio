@@ -8,8 +8,6 @@ import {
   GhOrg,
   GhRepo,
 } from "../interface/Github.ts";
-import { forEach } from "lodash";
-import { readBuilderProgram } from "typescript";
 
 export class GithubService {
   public username: string = "maxdlr";
@@ -67,6 +65,7 @@ export class GithubService {
     this.cookieService.setCookie({
       dates,
     });
+
     dates = this.contributionProcessor.calculateDateIntensity(dates);
     dates = this.contributionProcessor.sortDates(dates);
 
@@ -159,7 +158,6 @@ export class GithubService {
   ) {
     const result = [];
     for await (const fetched of iterator) {
-      console.log(fetched);
       for (const item of fetched.data) {
         action ? action(item) : result.push(item);
       }
