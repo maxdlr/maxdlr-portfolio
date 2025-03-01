@@ -1,7 +1,6 @@
 <script lang="ts" setup>
 import Button from "../atoms/Button.vue";
 import {
-  BIconArrowDownShort,
   BIconArrowRightShort,
   BIconBehance,
   BIconCheck,
@@ -134,31 +133,6 @@ const gifSize = computed(() => data["footer-wip"].gif.size);
             variant="ghost"
           />
         </div>
-      </div>
-    </section>
-    <section class="mt-5">
-      <div class="text-center">
-        <a
-          :href="data['footer-wip'].url"
-          class="text-center uk-link inline-block hover:text-gray-400"
-          target="_blank"
-        >
-          <p class="my-2">
-            <BIconArrowDownShort class="inline" />
-            <small>{{ $t("wip") }}</small>
-            <BIconArrowDownShort class="inline" />
-          </p>
-        </a>
-      </div>
-      <div class="flex justify-center">
-        <a :href="data['footer-wip'].url" class="text-center" target="_blank">
-          <img
-            :class="`rounded-2xl`"
-            :src="data['footer-wip'].gif.path"
-            :style="`max-width: ${gifSize}px; height: auto;`"
-            alt="maxime de la rocheterie maxorbe example gif"
-          />
-        </a>
       </div>
     </section>
     <div class="w-fit h-fit mx-auto">
