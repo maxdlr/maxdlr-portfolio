@@ -133,10 +133,6 @@ const socials = ref([
         </div>
       </div>
     </section>
-    <div class="w-fit h-fit mx-auto">
-      <GithubContributions class="my-5 rounded-2xl overflow-hidden" />
-    </div>
-
     <div class="text-center my-5">
       <p>{{ $t("bye") }}</p>
     </div>
