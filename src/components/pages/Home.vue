@@ -16,7 +16,6 @@ import { onBeforeMount, Ref, ref } from "vue";
 import data from "../../model/data.json";
 import { usePageHead } from "../../composables/usePageHead.ts";
 import { useI18n } from "vue-i18n";
-import GithubContributions from "./Github/GithubContributions.vue";
 
 const { locale } = useI18n({ useScope: "global" });
 
