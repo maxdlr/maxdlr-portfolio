@@ -26,4 +26,30 @@ const router = createRouter({
   routes,
 });
 
+router.beforeEach((to) => {
+  switch (to.path) {
+    case "/in":
+      {
+        window.location.href = "https://www.linkedin.com/in/maxdlr/";
+      }
+      break;
+    case "/reco":
+      {
+        window.location.href =
+          "https://www.linkedin.com/in/maxdlr/details/recommendations/?detailScreenTabIndex=0";
+      }
+      break;
+    case "/gh":
+      {
+        window.location.href = "https://www.github.com/maxdlr";
+      }
+      break;
+    case "/cv":
+      {
+        window.location.pathname = "/cv.pdf";
+      }
+      break;
+  }
+});
+
 export default router;
