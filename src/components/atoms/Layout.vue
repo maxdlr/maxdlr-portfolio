@@ -61,6 +61,7 @@ const links: {
             class="self-center text-2xl font-semibold whitespace-nowrap dark:text-white"
             >Maxdlr</span
           >
+          <span class="py-3 italic">{{ $t("job-title") }}</span>
         </a>
         <ul class="font-medium flex p-0 md:mt-0">
           <li v-for="(link, index) in links" :key="index">

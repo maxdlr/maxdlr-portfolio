@@ -12,7 +12,7 @@ import {
   BIconVimeo,
 } from "bootstrap-icons-vue";
 import { useClipboard } from "@vueuse/core";
-import { onBeforeMount, Ref, ref } from "vue";
+import { computed, onBeforeMount, Ref, ref } from "vue";
 import data from "../../model/data.json";
 import { usePageHead } from "../../composables/usePageHead.ts";
 import { useI18n } from "vue-i18n";
@@ -49,19 +49,27 @@ const socials = ref([
     url: data["social-links"].vimeo,
   },
 ]);
+const gifSize = computed(() => data["footer-wip"].gif.size);
 </script>
 
 <template>
   <main>
-    <section class="container mx-auto px-4">
+    <section class="container mx-auto px-8">
       <div class="w-full flex justify-center items-center flex-col mt-10">
         <div class="text-center md:hidden">
-          <img
-            alt="Maxime de la Rocheterie - FullStack Developer logo"
-            class="uk-icon-image w-10 h-10 mx-auto"
-            src="/logo.png"
-          />
-          <h1 class="text-2xl py-2">Maxdlr</h1>
+          <h1 class="text-2xl">Maxdlr</h1>
+          <p class="py-3 italic">{{ $t("job-title") }}</p>
+        </div>
+
+        <div class="flex justify-center my-7">
+          <a :href="data['footer-wip'].url" class="text-center" target="_blank">
+            <img
+              :class="`rounded-full`"
+              :src="data['footer-wip'].gif.path"
+              :style="`max-width: ${gifSize}px; height: auto;`"
+              alt="maxime de la rocheterie maxorbe example gif"
+            />
+          </a>
         </div>
 
         <p class="text-center">
@@ -73,22 +81,27 @@ const socials = ref([
           ><span class="max-sm:hidden">.</span>
         </p>
 
-        <div class="py-5 max-sm:py-1">
-          <p class="text-center max-sm:hidden">{{ $t("context") }}</p>
-
-          <div class="flex justify-center items-center py-5">
-            <div
-              v-for="(item, _, index) in data['work-links']"
-              :key="index"
-              class="inline"
-            >
-              <p v-if="index !== 0" class="inline px-2">{{ $t("or") }}</p>
-              <Button :label="item.name" :url="item.url" target="_blank" />
-            </div>
-            <p class="sm:hidden ps-2">?</p>
-          </div>
-          <p v-if="locale === 'en'" class="text-center max-sm:hidden">
-            services.
+        <div class="py-5 max-sm:py-5">
+          <p class="text-center">
+            <span>{{ $t("context") }}</span>
+            <span>
+              <a
+                class="uk-link"
+                :href="data['work-links'].developer.url"
+                target="_blank"
+                >{{ data["work-links"].developer.name }}</a
+              >
+            </span>
+            <span>{{ $t("or") }}</span>
+            <span>
+              <a
+                class="uk-link"
+                :href="data['work-links']['motion-designer'].url"
+                target="_blank"
+                >{{ data["work-links"]["motion-designer"].name }}</a
+              >
+            </span>
+            <span v-if="locale === 'en'" class="text-center"> services.</span>
           </p>
 
           <div class="text-center pt-3">

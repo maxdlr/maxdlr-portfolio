@@ -1,8 +1,9 @@
 {
   "hello": "hello",
   "this-is-the-website-of": "Hi, you are on the website of",
-  "context": "If you've ended up here, you are looking for",
-  "or": "or",
+  "context": "If you've ended up here, you are looking for ",
+  "job-title": "Full-Stack developer - Java/Angular",
+  "or": " or ",
   "or-say-hello": "Or say hello",
   "wip": "Working on this right now",
   "bye": "Cheers.",

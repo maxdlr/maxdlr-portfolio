@@ -1,15 +1,16 @@
 {
   "author": {
     "name": "Maxime de la Rocheterie",
-    "email": "contact@maxdlr.com"
+    "email": "contact@maxdlr.com",
+    "logoPath": "/logo.png"
   },
   "work-links": {
     "developer": {
-      "name": "Dev",
+      "name": "dev",
       "url": "https://www.github.com/maxdlr"
     },
     "motion-designer": {
-      "name": "Motion",
+      "name": "motion",
       "url": "https://motion.maxdlr.com"
     }
   },
@@ -24,9 +25,12 @@
   "footer-wip": {
     "gif": {
       "path": "/current-project.gif",
-      "size": "100"
+      "size": "200"
     },
     "url": "https://github.com/maxdlr/MaxOrbe"
+  },
+  "helper": {
+    "loader": "/loading.gif"
   },
   "blog": {
     "article": {
