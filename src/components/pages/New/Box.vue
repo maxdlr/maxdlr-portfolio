@@ -5,25 +5,29 @@ defineProps({
   w: {
     type: {} as PropType<
       | {
-          sm?: number;
-          md?: number;
-          lg?: number;
-          xl?: number;
-          xxl?: number;
+          sm?: number | string;
+          md?: number | string;
+          lg?: number | string;
+          xl?: number | string;
+          xxl?: number | string;
+          _?: number | string;
         }
       | number
+      | string
     >,
   },
   h: {
     type: {} as PropType<
       | {
-          sm?: number;
-          md?: number;
-          lg?: number;
-          xl?: number;
-          xxl?: number;
+          sm?: number | string;
+          md?: number | string;
+          lg?: number | string;
+          xl?: number | string;
+          xxl?: number | string;
+          _?: number | string;
         }
       | number
+      | string
     >,
   },
   bgColor: { type: String, default: "gray" },
@@ -34,6 +38,7 @@ defineProps({
   <div
     :class="[
       `bg-${bgColor}-${bgColorIntensity}`,
+      'transition-all',
       w && (typeof w === 'number' || typeof w === 'string')
         ? 'col-span-' + w
         : [
@@ -42,6 +47,7 @@ defineProps({
             w && typeof w !== 'number' && w.lg ? 'lg:col-span-' + w.lg : '',
             w && typeof w !== 'number' && w.xl ? 'xl:col-span-' + w.xl : '',
             w && typeof w !== 'number' && w.xxl ? '2xl:col-span-' + w.xxl : '',
+            w && typeof w !== 'number' && w._ ? 'col-span-' + w._ : '',
           ],
       h && (typeof h === 'number' || typeof h === 'string')
         ? 'row-span-' + h
@@ -51,6 +57,7 @@ defineProps({
             h && typeof h !== 'number' && h.lg ? 'lg:row-span-' + h.lg : '',
             h && typeof h !== 'number' && h.xl ? 'xl:row-span-' + h.xl : '',
             h && typeof h !== 'number' && h.xxl ? '2xl:row-span-' + h.xxl : '',
+            h && typeof h !== 'number' && h._ ? 'row-span-' + h._ : '',
           ],
     ]"
     class="rounded-2xl p-3"
