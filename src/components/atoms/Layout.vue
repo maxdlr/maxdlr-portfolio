@@ -44,52 +44,54 @@ const links: {
 </script>
 
 <template>
-  <TransitionSlideDown>
-    <nav class="md:mx-10">
-      <div
-        class="max-w-screen-xl flex items-center justify-center md:justify-between mx-auto p-4"
-      >
-        <a class="md:hidden" href="/">
-          <img alt="Maxdlr logo" class="h-8 w-auto px-2" src="/logo.png" />
-        </a>
-        <a
-          class="flex max-md:hidden items-center space-x-3 rtl:space-x-reverse"
-          href="/"
+  <div class="max-h-[100svh]">
+    <TransitionSlideDown>
+      <nav class="md:mx-10">
+        <div
+          class="max-w-screen-xl flex items-center justify-center md:justify-between mx-auto p-4"
         >
-          <img alt="Maxdlr logo" class="h-8" src="/logo.png" />
-          <span
-            class="self-center text-2xl font-semibold whitespace-nowrap dark:text-white"
-            >Maxdlr</span
+          <a class="md:hidden" href="/">
+            <img alt="Maxdlr logo" class="h-8 w-auto px-2" src="/logo.png" />
+          </a>
+          <a
+            class="flex max-md:hidden items-center space-x-3 rtl:space-x-reverse"
+            href="/"
           >
-          <span class="py-3 italic">{{ $t("job-title") }}</span>
-        </a>
-        <ul class="font-medium flex p-0 md:mt-0">
-          <li v-for="(link, index) in links" :key="index">
-            <Button
-              :label="link.label"
-              :target="link.target"
-              :url="link.url"
-              :variant="isCurrentRouteBlog ? 'primary' : 'ghost'"
-              aria-current="page"
-              extra-class="px-2 md:p-5"
-            />
-          </li>
-          <li>
-            <Button
-              :label="currentLocale?.code === 'fr' ? '🇫🇷' : '🇺🇸'"
-              class="float-end"
-              extra-class="px-2 md:p-5"
-              variant="ghost"
-              @click.prevent="
-                switchLocale(currentLocale?.code === 'fr' ? 'en' : 'fr')
-              "
-            />
-          </li>
-        </ul>
-      </div>
-    </nav>
-  </TransitionSlideDown>
-  <TransitionSlideUp>
-    <slot />
-  </TransitionSlideUp>
+            <img alt="Maxdlr logo" class="h-8" src="/logo.png" />
+            <span
+              class="self-center text-2xl font-semibold whitespace-nowrap dark:text-white"
+              >Maxdlr</span
+            >
+            <span class="py-3 italic">{{ $t("job-title") }}</span>
+          </a>
+          <ul class="font-medium flex p-0 md:mt-0">
+            <li v-for="(link, index) in links" :key="index">
+              <Button
+                :label="link.label"
+                :target="link.target"
+                :url="link.url"
+                :variant="isCurrentRouteBlog ? 'primary' : 'ghost'"
+                aria-current="page"
+                extra-class="px-2 md:p-5"
+              />
+            </li>
+            <li>
+              <Button
+                :label="currentLocale?.code === 'fr' ? '🇫🇷' : '🇺🇸'"
+                class="float-end"
+                extra-class="px-2 md:p-5"
+                variant="ghost"
+                @click.prevent="
+                  switchLocale(currentLocale?.code === 'fr' ? 'en' : 'fr')
+                "
+              />
+            </li>
+          </ul>
+        </div>
+      </nav>
+    </TransitionSlideDown>
+    <TransitionSlideUp>
+      <slot />
+    </TransitionSlideUp>
+  </div>
 </template>
