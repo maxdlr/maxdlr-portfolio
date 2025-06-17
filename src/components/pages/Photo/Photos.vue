@@ -139,7 +139,7 @@ function getFilenameFromPath(filePath: string) {
   </div>
   <div
     v-else
-    class="flex justify-center items-center flex-wrap gap-2 mb-5 md:w-[80%] lg:w-[60%] w-[97%]"
+    class="flex justify-center items-center flex-wrap gap-2 mb-5 mx-4"
   >
     <LightBox
       v-model:path="currentLightBoxed"
