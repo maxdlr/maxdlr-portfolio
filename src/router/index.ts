@@ -2,12 +2,18 @@ import { createRouter, createWebHistory } from "vue-router";
 import Home from "../components/pages/Home.vue";
 import Blog from "../components/pages/Blog/Blog.vue";
 import BlogArticle from "../components/pages/Blog/BlogArticle.vue";
+import Photos from "../components/pages/Photo/Photos.vue";
 
 const routes = [
   {
     path: "/",
     name: "Home",
     component: Home,
+  },
+  {
+    path: "/photos",
+    name: "Photos",
+    component: Photos,
   },
   {
     path: "/blog",
