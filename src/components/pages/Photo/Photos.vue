@@ -1,6 +1,8 @@
 <script setup lang="ts">
 import { onMounted, ref, Ref } from "vue";
 import Button from "../../atoms/Button.vue";
+import LightBox from "../../atoms/LightBox.vue";
+import SlideUpTransition from "../../atoms/SlideUpTransition.vue";
 import _ from "lodash";
 import Loader from "../../atoms/Loader.vue";
 
@@ -79,12 +81,19 @@ const filterPhotos = () => {
   });
 };
 
-const prefixes: string[] = ["stranger", "misc", "widelux"];
+const prefixes: string[] = ["stranger", "misc", "minolta", "widelux"];
+
+const findHash = () => {
+  if (!window.location.hash) return;
+  const foundFileName: string = window.location.hash.substring(1);
+  show(`/photos/${foundFileName}.jpg`);
+};
 
 onMounted(async () => {
   isLoading.value = true;
   await registerFiles();
   filterPhotos();
+  findHash();
   isLoading.value = false;
 });
 
@@ -97,10 +106,43 @@ const toggleCategory = (cat: string | null) => {
   currentCat.value = currentCat.value === cat ? null : cat;
   filterPhotos();
 };
+
+const currentLightBoxed: Ref<string | undefined> = ref(undefined);
+
+const show = (photo: string) => {
+  window.location.hash = getFilenameFromPath(photo);
+  currentLightBoxed.value = photo;
+};
+
+function getFilenameFromPath(filePath: string) {
+  const lastSlashIndex = filePath.lastIndexOf("/");
+  let filenameWithExtension = filePath;
+
+  if (lastSlashIndex !== -1) {
+    filenameWithExtension = filePath.substring(lastSlashIndex + 1);
+  }
+  const lastDotIndex = filenameWithExtension.lastIndexOf(".");
+
+  if (lastDotIndex !== -1 && lastDotIndex !== 0) {
+    return filenameWithExtension.substring(0, lastDotIndex);
+  }
+
+  return filenameWithExtension;
+}
 </script>
 
 <template>
-  <div class="flex justify-center items-center gap-3 mb-5">
+  <div v-if="isLoading" class="w-fit mx-auto">
+    <Loader />
+  </div>
+  <div v-else-if="currentPhotos.length === 0" class="text-center w-full">
+    No photos, apparently
+  </div>
+  <div v-else class="flex justify-center items-center gap-3 mb-5">
+    <LightBox
+      v-model:path="currentLightBoxed"
+      v-model:currentPhotos="currentPhotos"
+    />
     <Button
       v-for="(cat, index) in prefixes"
       :key="index"
@@ -125,24 +167,19 @@ const toggleCategory = (cat: string | null) => {
         :key="photo"
         class="md:w-[80%] lg:w-[60%]"
         :style="{ '--delay': `${index * 50}ms` }"
+        @click.prevent="show(photo)"
       >
         <img
-          :class="`rounded-2xl`"
+          class="rounded-2xl cursor-pointer w-full"
           :src="photo"
           :alt="photo"
-          class="w-full"
           @error="filterOut(photo)"
         />
       </div>
     </TransitionGroup>
-    <div v-if="isLoading" class="w-fit mx-auto">
-      <Loader />
-    </div>
-    <div v-else-if="currentPhotos.length === 0" class="text-center w-full">
-      No photos found for this category or all failed to load.
-    </div>
   </section>
 </template>
+
 <style scoped>
 .photo-list-enter-active,
 .photo-list-leave-active {
@@ -170,13 +207,6 @@ const toggleCategory = (cat: string | null) => {
 
 .photo-list-move {
   transition: transform 1s cubic-bezier(0, 1, 0, 1);
-}
-
-.md\:w-\[80\%\] {
-  width: 80%;
-}
-.lg\:w-\[60\%\] {
-  width: 60%;
 }
 
 .photo-list-enter-active,
