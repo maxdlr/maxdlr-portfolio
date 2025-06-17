@@ -32,7 +32,10 @@ defineProps({
         <span v-if="label">{{ label }}</span>
       </slot>
     </a>
-    <button v-else :class="`uk-button uk-button-${variant} ${extraClass}`">
+    <button
+      v-else
+      :class="`uk-button uk-button-${variant} ${extraClass} hover:bg-gray-900 hover:text-white transition-all active:bg-gray-600`"
+    >
       <slot>
         <component :is="icon" v-if="icon" />
         <span v-if="label">{{ label }}</span>

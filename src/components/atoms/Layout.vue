@@ -40,6 +40,10 @@ const links: {
     label: "Blog",
     url: "/blog",
   },
+  {
+    label: "Photos",
+    url: "/photos",
+  },
 ];
 </script>
 
