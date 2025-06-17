@@ -117,7 +117,7 @@ const gifSize = computed(() => data["footer-wip"].gif.size);
             <Button
               v-if="isSupported"
               :icon="!copied ? BIconCopy : BIconCheck"
-              class="hover:text-gray-400"
+              extra-class="hover:text-gray-400 rounded-full"
               variant="ghost"
               @click.prevent="copy(email)"
             />
@@ -150,3 +150,21 @@ const gifSize = computed(() => data["footer-wip"].gif.size);
     </div>
   </main>
 </template>
+
+<style lang="scss" scoped>
+@keyframes slideup {
+  from {
+    opacity: 0;
+    transform: translateY(100px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+main {
+  animation-name: slideup;
+  animation-duration: 2s;
+  animation-timing-function: cubic-bezier(0.1, 1, 0, 1);
+}
+</style>

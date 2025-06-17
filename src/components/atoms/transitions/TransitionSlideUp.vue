@@ -11,7 +11,7 @@
 }
 
 .slide-up-enter-active {
-  transition: all 1s cubic-bezier(0, 1, 0, 1);
+  transition: all 2s cubic-bezier(0.1, 1, 0, 1);
 }
 
 .slide-up-enter-to {

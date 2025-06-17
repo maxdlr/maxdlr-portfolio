@@ -2,6 +2,7 @@
 import { defineModel, computed, watchEffect } from "vue";
 import Button from "./Button.vue";
 import TransitionSlideUp from "../atoms/transitions/TransitionSlideUp.vue";
+import { BIconArrowLeft, BIconArrowRight } from "bootstrap-icons-vue";
 
 const path = defineModel<string | undefined>("path");
 const currentPhotos = defineModel<string[]>("currentPhotos", {
@@ -72,17 +73,37 @@ watchEffect((onCleanup) => {
   <TransitionSlideUp>
     <div
       v-if="path"
-      class="fixed inset-0 z-50 flex items-center justify-center p-4"
+      class="fixed inset-0 z-50 flex items-center justify-center"
     >
       <div
-        class="relative w-full h-full rounded-2xl flex items-center justify-center max-w-screen-2xl max-h-screen-2xl"
-        @click.stop="close()"
+        class="relative w-full h-full rounded-2xl flex items-center justify-center"
+        @click.stop=""
       >
-        <img
-          :src="path"
-          :alt="path"
-          class="w-full h-full rounded-2xl object-contain"
-        />
+        <div
+          class="grid grid-cols-12 grid-rows-1 items-center justify-center max-h-[90%]"
+        >
+          <Button
+            class="col-span-1 flex justify-center items-center"
+            label="left"
+            variant="ghost"
+            extra-class="bg-none text-white hover:bg-black rounded-full"
+            @click.prevent="showPrev()"
+            ><BIconArrowLeft
+          /></Button>
+          <img
+            :src="path"
+            :alt="path"
+            class="w-full rounded-2xl object-contain col-span-10 h-full mx-auto"
+          />
+          <Button
+            class="col-span-1 flex justify-center items-center"
+            label="right"
+            variant="ghost"
+            extra-class="bg-none text-white hover:bg-black rounded-full"
+            @click.prevent="showNext()"
+            ><BIconArrowRight
+          /></Button>
+        </div>
 
         <Button
           variant="ghost"

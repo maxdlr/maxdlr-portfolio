@@ -139,11 +139,12 @@ function getFilenameFromPath(filePath: string) {
   </div>
   <div
     v-else
-    class="flex justify-center items-center flex-wrap gap-2 mb-5 mx-4"
+    class="flex justify-center items-center flex-wrap gap-2 mb-5 mx-4 z-50"
   >
-    <LightBox
-      v-model:path="currentLightBoxed"
-      v-model:currentPhotos="currentPhotos"
+    <Button
+      label="All"
+      :extra-class="currentCat === null ? 'bg-black text-white' : ''"
+      @click.prevent="toggleCategory(null)"
     />
     <Button
       v-for="(cat, index) in prefixes"
@@ -152,23 +153,22 @@ function getFilenameFromPath(filePath: string) {
       :extra-class="currentCat === cat ? 'bg-black text-white' : ''"
       @click.prevent="toggleCategory(cat)"
     />
-    <Button
-      label="All"
-      :extra-class="currentCat === null ? 'bg-black text-white' : ''"
-      @click.prevent="toggleCategory(null)"
-    />
   </div>
   <section class="flex justify-center items-start flex-wrap gap-5 mb-10">
+    <LightBox
+      v-model:path="currentLightBoxed"
+      v-model:currentPhotos="currentPhotos"
+    />
     <TransitionGroup
       name="photo-list"
       tag="div"
-      class="flex flex-wrap justify-center items-start md:gap-5 gap-2 w-full"
+      class="grid grid-flow-row grid-cols-1 md:gap-5 gap-2 w-full"
     >
       <div
         v-for="(photo, index) in currentPhotos"
         :key="photo"
-        class="md:w-[80%] lg:w-[60%] w-[97%]"
-        :style="{ '--delay': `${index * 50}ms` }"
+        class="xl:w-[60%] md:w-[80%] lg:w-[60%] w-[97%] img-div mx-auto"
+        :style="{ '--delay': `${index * 80}ms` }"
         @click.prevent="show(photo)"
       >
         <img
@@ -182,15 +182,16 @@ function getFilenameFromPath(filePath: string) {
   </section>
 </template>
 
-<style scoped>
+<style scoped lang="scss">
 .photo-list-enter-active,
 .photo-list-leave-active {
-  transition: all 1s cubic-bezier(0, 1, 0, 1);
+  transition: all 2s cubic-bezier(0.1, 1, 0, 1);
   transition-delay: var(--delay);
 }
 
 .photo-list-enter-from {
   opacity: 0;
+  height: 100%;
   transform: translateY(100px);
 }
 .photo-list-enter-to {
@@ -200,20 +201,32 @@ function getFilenameFromPath(filePath: string) {
 
 .photo-list-leave-active {
   position: absolute;
-  transition: all 0.2s cubic-bezier(0, 1, 0, 1);
+  z-index: -10;
+  transition: all 1s cubic-bezier(0.1, 1, 0, 1);
 }
 .photo-list-leave-to {
   opacity: 0;
-  transform: translateY(-50px);
+  transform: translateY(-50px) scaleY(0%);
 }
 
 .photo-list-move {
-  transition: transform 1s cubic-bezier(0, 1, 0, 1);
+  transition: transform 2s cubic-bezier(0.1, 1, 0, 1);
 }
 
 .photo-list-enter-active,
 .photo-list-leave-active,
 .photo-list-move {
   flex-basis: auto;
+}
+
+.img-div {
+  img {
+    transition: all 2s cubic-bezier(0.1, 1, 0, 1);
+    &:hover {
+      rotate: 1deg;
+      scale: 98%;
+      translate: 0px -10px;
+    }
+  }
 }
 </style>
