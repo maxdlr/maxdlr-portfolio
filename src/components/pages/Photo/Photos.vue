@@ -159,12 +159,12 @@ function getFilenameFromPath(filePath: string) {
     <TransitionGroup
       name="photo-list"
       tag="div"
-      class="flex flex-wrap justify-center items-start gap-5 w-full"
+      class="flex flex-wrap justify-center items-start md:gap-5 gap-2 w-full"
     >
       <div
         v-for="(photo, index) in currentPhotos"
         :key="photo"
-        class="md:w-[80%] lg:w-[60%]"
+        class="md:w-[80%] lg:w-[60%] w-[97%]"
         :style="{ '--delay': `${index * 50}ms` }"
         @click.prevent="show(photo)"
       >
