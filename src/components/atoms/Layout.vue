@@ -42,7 +42,7 @@ const links: {
   },
   {
     label: "Photos",
-    url: "/photos",
+    url: "/photo",
   },
 ];
 </script>
