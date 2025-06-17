@@ -2,7 +2,6 @@
 import { onMounted, ref, Ref } from "vue";
 import Button from "../../atoms/Button.vue";
 import LightBox from "../../atoms/LightBox.vue";
-import SlideUpTransition from "../../atoms/SlideUpTransition.vue";
 import _ from "lodash";
 import Loader from "../../atoms/Loader.vue";
 
