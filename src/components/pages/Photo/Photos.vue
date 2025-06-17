@@ -137,7 +137,10 @@ function getFilenameFromPath(filePath: string) {
   <div v-else-if="currentPhotos.length === 0" class="text-center w-full">
     No photos, apparently
   </div>
-  <div v-else class="flex justify-center items-center gap-3 mb-5">
+  <div
+    v-else
+    class="flex justify-center items-center flex-wrap gap-2 mb-5 md:w-[80%] lg:w-[60%] w-[97%]"
+  >
     <LightBox
       v-model:path="currentLightBoxed"
       v-model:currentPhotos="currentPhotos"
