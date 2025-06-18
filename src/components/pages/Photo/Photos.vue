@@ -97,20 +97,26 @@ onMounted(async () => {
 });
 
 const filterOut = (photo: string) => {
+  isLoading.value = true;
   unfoundPhotos.value.add(photo);
   filterPhotos();
+  isLoading.value = false;
 };
 
 const toggleCategory = (cat: string | null) => {
+  isLoading.value = true;
   currentCat.value = currentCat.value === cat ? null : cat;
   filterPhotos();
+  isLoading.value = false;
 };
 
 const currentLightBoxed: Ref<string | undefined> = ref(undefined);
 
 const show = (photo: string) => {
+  isLoading.value = true;
   window.location.hash = getFilenameFromPath(photo);
   currentLightBoxed.value = photo;
+  isLoading.value = false;
 };
 
 function getFilenameFromPath(filePath: string) {
@@ -170,7 +176,7 @@ function getFilenameFromPath(filePath: string) {
       >
         <img
           class="rounded-2xl cursor-pointer w-full"
-          :src="photo"
+          :src="photo || '/photo.jpg'"
           :alt="photo"
           @error="filterOut(photo)"
         />
