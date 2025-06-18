@@ -131,16 +131,7 @@ function getFilenameFromPath(filePath: string) {
 </script>
 
 <template>
-  <div v-if="isLoading" class="w-fit mx-auto">
-    <Loader />
-  </div>
-  <div v-else-if="currentPhotos.length === 0" class="text-center w-full">
-    No photos, apparently
-  </div>
-  <div
-    v-else
-    class="flex justify-center items-center flex-wrap gap-2 mb-5 mx-4 z-50"
-  >
+  <div class="flex justify-center items-center flex-wrap gap-2 mb-5 mx-4 z-50">
     <Button
       label="All"
       :extra-class="currentCat === null ? 'bg-black text-white' : ''"
@@ -154,7 +145,13 @@ function getFilenameFromPath(filePath: string) {
       @click.prevent="toggleCategory(cat)"
     />
   </div>
-  <section class="flex justify-center items-start flex-wrap gap-5 mb-10">
+  <div v-if="isLoading" class="w-fit mx-auto">
+    <Loader />
+  </div>
+  <div v-else-if="currentPhotos.length === 0" class="text-center w-full">
+    No photos, apparently
+  </div>
+  <section class="flex justify-center items-start flex-wrap gap-5 mb-10" v-else>
     <LightBox
       v-model:path="currentLightBoxed"
       v-model:currentPhotos="currentPhotos"
