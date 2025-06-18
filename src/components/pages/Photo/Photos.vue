@@ -53,7 +53,7 @@ const registerFiles = async () => {
   const promises: Promise<void>[] = [];
   prefixes.forEach((prefix: string) => {
     promises.push(
-      findPhotos(prefix, 50).then((existingPaths: string[]) => {
+      findPhotos(prefix, 12).then((existingPaths: string[]) => {
         filenames.value.set(prefix, existingPaths);
       }),
     );
