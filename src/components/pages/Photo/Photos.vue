@@ -36,7 +36,7 @@ const findPhotos = async (prefix: string, count: number): Promise<string[]> => {
   const checkPromises: Promise<{ path: string; exists: boolean }>[] = [];
   for (let i: number = 1; i <= count; i++) {
     const index = i.toString().length < 2 ? `0${i}` : i;
-    const filePath = `/photos/${prefix}-${index}.jpg`;
+    const filePath = `/photo-collections/${prefix}-${index}.jpg`;
     checkPromises.push(
       checkImageExists(filePath).then((exists: boolean) => ({
         path: filePath,
@@ -85,7 +85,7 @@ const prefixes: string[] = ["stranger", "misc", "minolta", "widelux"];
 const findHash = () => {
   if (!window.location.hash) return;
   const foundFileName: string = window.location.hash.substring(1);
-  show(`/photos/${foundFileName}.jpg`);
+  show(`/photo-collections/${foundFileName}.jpg`);
 };
 
 onMounted(async () => {
