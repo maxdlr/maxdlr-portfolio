@@ -36,10 +36,10 @@ const links: {
     url: "/cv.pdf",
     target: "_blank",
   },
-  {
-    label: "Blog",
-    url: "/blog",
-  },
+  // {
+  //   label: "Blog",
+  //   url: "/blog",
+  // },
   {
     label: "Photos",
     url: "/photos",
