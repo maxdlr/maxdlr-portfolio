@@ -1,0 +1,8 @@
+services:
+  maxdlr:
+    container_name: maxdlr
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - "4200:80"
