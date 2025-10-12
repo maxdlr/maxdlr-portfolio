@@ -4,11 +4,12 @@ import Dev from "@/components/Dev/Dev";
 import Landing from "@/components/Landing/Landing";
 import Motion from "@/components/Motion/Motion";
 import Photos from "@/components/Photos/Photos";
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import { UrlParams } from "@/services/urlParams";
 
 interface Tab {
   label: string;
-  hash: string;
+  slug: string;
   url?: string;
 }
 
@@ -18,34 +19,34 @@ interface Tabs {
 
 const Home = () => {
   const tabs: Tabs = {
-    home: { label: "Home", hash: "home" },
-    motion: { label: "Motion", hash: "motion" },
-    dev: { label: "Dev", hash: "dev" },
-    photos: { label: "Photos", hash: "photos" },
+    home: { label: "Home", slug: "home" },
+    motion: { label: "Motion", slug: "motion" },
+    dev: { label: "Dev", slug: "dev" },
+    photos: { label: "Photos", slug: "photos" },
   };
 
-  let hash: string;
-  if (location) {
-    hash = location.hash.replace("#", "").toLowerCase();
-  } else {
-    hash = "home";
-  }
+  const [tab, setTab] = useState<Tab>(tabs.home);
 
-  const [currentTab, setCurrentTab] = useState(
-    Object.values(tabs).find((t: Tab) => t.hash === hash) || tabs.home,
-  );
+  useEffect(() => {
+    const tabParam = UrlParams.get("tab")?.toLowerCase() || "home";
+    setTab(tabs[tabParam] || tabs.home);
+  }, []);
 
-  console.log(window.location.pathname);
+  useEffect(() => {
+    const unsub = UrlParams.onChange(() => {
+      const tabParam = UrlParams.get("tab")?.toLowerCase() || "home";
+      setTab(tabs[tabParam] || tabs.home);
+    });
+    return unsub;
+  }, []);
 
   const handleTabSelect = (tab: Tab) => {
-    setCurrentTab(tab);
-    window.location.hash = tab.hash;
+    setTab(tab);
+    UrlParams.set("tab", tab.slug);
   };
 
   const TabContent = () => {
-    switch (currentTab?.label) {
-      case tabs.home.label:
-        return Landing();
+    switch (tab?.label) {
       case tabs.motion.label:
         return Motion();
       case tabs.dev.label:
@@ -57,16 +58,14 @@ const Home = () => {
     }
   };
 
-  const Tab = (tab: Tab) => {
-    return (
-      <Button
-        className={`${currentTab?.label === tab.label ? "text-white" : "text-gray-700"} text-2xl`}
-        label={tab.label}
-        onClick={() => handleTabSelect(tab)}
-        url={tab.url}
-      />
-    );
-  };
+  const Tab = (tab: Tab) => (
+    <Button
+      className={`${tab?.label === tab.label ? "text-white" : "text-gray-700"} text-2xl`}
+      label={tab.label}
+      onClick={() => handleTabSelect(tab)}
+      url={tab.url}
+    />
+  );
 
   return (
     <>
