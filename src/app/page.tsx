@@ -9,7 +9,7 @@ import { UrlParams } from "@/services/urlParams";
 
 interface Tab {
   label: string;
-  slug: string;
+  param: string;
   url?: string;
 }
 
@@ -19,10 +19,10 @@ interface Tabs {
 
 const Home = () => {
   const tabs: Tabs = {
-    home: { label: "Home", slug: "home" },
-    motion: { label: "Motion", slug: "motion" },
-    dev: { label: "Dev", slug: "dev" },
-    photos: { label: "Photos", slug: "photos" },
+    home: { label: "Home", param: "home" },
+    motion: { label: "Motion", param: "motion" },
+    dev: { label: "Dev", param: "dev" },
+    photos: { label: "Photos", param: "photos" },
   };
 
   const [tab, setTab] = useState<Tab>(tabs.home);
@@ -42,7 +42,7 @@ const Home = () => {
 
   const handleTabSelect = (tab: Tab) => {
     setTab(tab);
-    UrlParams.set("tab", tab.slug);
+    UrlParams.set("tab", tab.param);
   };
 
   const TabContent = () => {

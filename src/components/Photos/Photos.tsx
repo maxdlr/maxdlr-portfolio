@@ -2,25 +2,28 @@
 
 import { Photo } from "@/app/api/photos/route";
 import Image from "next/image";
-import { useEffect, useState } from "react";
+import { ReactElement, useEffect, useState } from "react";
 import Button from "../Button/Button";
 import { UrlParams } from "@/services/urlParams";
 import { AnimatePresence, motion } from "framer-motion";
+import useBreakpoint from "use-breakpoint";
 
 const Photos = () => {
-  const [isClient, setIsClient] = useState(false);
   const [photos, setPhotos] = useState<Photo[]>([]);
   const [category, setCategory] = useState<string>("all");
+  const [isLoading, setIsLoading] = useState<boolean>(true);
 
-  // mark as client-only
+  const BREAKPOINTS = {
+    base: 0,
+    sm: 640,
+    md: 768,
+    lg: 1024,
+    xl: 1280,
+    "2xl": 1536,
+  };
+  const { breakpoint } = useBreakpoint(BREAKPOINTS);
+
   useEffect(() => {
-    setIsClient(true);
-  }, []);
-
-  // fetch photos after mount
-  useEffect(() => {
-    if (!isClient) return;
-
     const fetchPhotos = async () => {
       const res = await fetch("/api/photos");
       const data = await res.json();
@@ -34,25 +37,24 @@ const Photos = () => {
         setCategory("all");
       }
     };
-    fetchPhotos();
-  }, [isClient]);
+    setTimeout(() => {
+      fetchPhotos();
+      setIsLoading(false);
+    }, 1000);
+  }, []);
 
-  // handle back/forward navigation
   useEffect(() => {
-    if (!isClient) return;
     const unsub = UrlParams.onChange(() => {
       const newCat = UrlParams.get("cat") || "all";
       setCategory(newCat);
     });
     return unsub;
-  }, [isClient]);
+  }, []);
 
   const handleCategorySelect = (newCategory: string) => {
     setCategory(newCategory);
     UrlParams.set("cat", newCategory);
   };
-
-  if (!isClient) return null; // render nothing on SSR
 
   const filteredPhotos =
     category === "all" ? photos : photos.filter((p) => p.category === category);
@@ -61,6 +63,55 @@ const Photos = () => {
     "all",
     ...new Set(photos.map((p) => p.category)),
   ]);
+
+  const photoElements = filteredPhotos.map(
+    (photo): ReactElement => (
+      <motion.div
+        key={photo.path}
+        layout
+        initial={{ opacity: 0, scale: 0.95 }}
+        animate={{ opacity: 1, scale: 1 }}
+        exit={{ opacity: 0, scale: 0.95 }}
+        transition={{ duration: 0.25 }}
+      >
+        <Image
+          src={photo.path}
+          alt={photo.alt}
+          width={1000}
+          height={1000}
+          className="rounded-lg shadow-md"
+        />
+      </motion.div>
+    ),
+  );
+
+  const masonryGrid = (colsCount: number) => {
+    if (!photoElements.length) return null;
+
+    const cols: ReactElement[][] = Array.from({ length: colsCount }, () => []);
+    photoElements.forEach((photoEl, i) => {
+      cols[i % colsCount].push(photoEl);
+    });
+
+    const gridColsClass = `grid grid-cols-${colsCount} gap-2`;
+
+    return (
+      <div className={gridColsClass}>
+        {cols.map((col, i) => (
+          <div key={i} className="flex flex-col gap-2">
+            {col}
+          </div>
+        ))}
+      </div>
+    );
+  };
+
+  const cols =
+    breakpoint === "xl" || breakpoint === "2xl"
+      ? 3
+      : breakpoint === "lg" || breakpoint === "md"
+        ? 2
+        : 1;
 
   return (
     <>
@@ -81,26 +132,8 @@ const Photos = () => {
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           exit={{ opacity: 0 }}
-          className="flex flex-wrap gap-2"
         >
-          {filteredPhotos.map((photo) => (
-            <motion.div
-              key={photo.path}
-              layout
-              initial={{ opacity: 0, scale: 0.95 }}
-              animate={{ opacity: 1, scale: 1 }}
-              exit={{ opacity: 0, scale: 0.95 }}
-              transition={{ duration: 0.25 }}
-            >
-              <Image
-                src={photo.path}
-                alt={photo.alt}
-                width={300}
-                height={300}
-                className="rounded-lg shadow-md"
-              />
-            </motion.div>
-          ))}
+          {masonryGrid(cols || 1)}
         </motion.div>
       </AnimatePresence>
     </>
