@@ -27,10 +27,16 @@ const Photos = () => {
     const fetchPhotos = async () => {
       const res = await fetch("/api/photos");
       const data = await res.json();
-      setPhotos(data);
+
+      const shuffled = data.sort(() => Math.random() - 0.5);
+
+      setPhotos(shuffled);
 
       const catParam = UrlParams.get("cat");
-      const validCategories = ["all", ...new Set(data.map((p) => p.category))];
+      const validCategories = [
+        "all",
+        ...new Set(data.map((p: Photo) => p.category)),
+      ];
       if (catParam && validCategories.includes(catParam)) {
         setCategory(catParam);
       } else {
@@ -69,10 +75,28 @@ const Photos = () => {
       <motion.div
         key={photo.path}
         layout
-        initial={{ opacity: 0, scale: 0.95 }}
-        animate={{ opacity: 1, scale: 1 }}
-        exit={{ opacity: 0, scale: 0.95 }}
-        transition={{ duration: 0.25 }}
+        initial={{
+          opacity: 0,
+          y: "100px",
+        }}
+        animate={{
+          opacity: 1,
+          y: 0,
+          transition: {
+            ease: [0, 0.7, 0.2, 1],
+          },
+        }}
+        exit={{
+          opacity: 0,
+          y: "-100px",
+          transition: {
+            ease: [0.3, 0, 0.8, 0],
+            duration: 0.5,
+          },
+        }}
+        transition={{
+          duration: 0.5,
+        }}
       >
         <Image
           src={photo.path}
@@ -93,10 +117,8 @@ const Photos = () => {
       cols[i % colsCount].push(photoEl);
     });
 
-    const gridColsClass = `grid grid-cols-${colsCount} gap-2`;
-
     return (
-      <div className={gridColsClass}>
+      <div className="grid grid-flow-col gap-2">
         {cols.map((col, i) => (
           <div key={i} className="flex flex-col gap-2">
             {col}
@@ -126,16 +148,7 @@ const Photos = () => {
         ))}
       </div>
 
-      <AnimatePresence mode="wait">
-        <motion.div
-          key={category || "all"}
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          exit={{ opacity: 0 }}
-        >
-          {masonryGrid(cols || 1)}
-        </motion.div>
-      </AnimatePresence>
+      <AnimatePresence mode="wait">{masonryGrid(cols || 1)}</AnimatePresence>
     </>
   );
 };
