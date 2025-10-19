@@ -1,5 +1,4 @@
 "use client";
-
 import {
   createContext,
   useContext,
@@ -10,6 +9,7 @@ import {
   SetStateAction,
 } from "react";
 import { Photo } from "@/app/api/photos/route";
+import { UrlParams } from "@/services/urlParams";
 
 interface PhotoContextType {
   photos: Photo[];
@@ -29,6 +29,7 @@ export const PhotoProvider = ({ children }: { children: ReactNode }) => {
   const [shownPhoto, setShownPhoto] = useState<Photo>();
   const [loading, setLoading] = useState<boolean>(true);
   const [category, setCategory] = useState<string>("all");
+  const [isInitialized, setIsInitialized] = useState(false);
 
   const fetchPhotos = async () => {
     setLoading(true);
@@ -42,6 +43,46 @@ export const PhotoProvider = ({ children }: { children: ReactNode }) => {
       setLoading(false);
     }
   };
+
+  useEffect(() => {
+    if (photos.length > 0 && !isInitialized) {
+      const photoParam = UrlParams.get("p");
+      if (photoParam) {
+        const photo = photos.find((p) => p.name === photoParam);
+        if (photo) {
+          setShownPhoto(photo);
+        }
+      }
+      setIsInitialized(true);
+    }
+  }, [photos, isInitialized]);
+
+  useEffect(() => {
+    if (!isInitialized) return;
+
+    if (shownPhoto) {
+      UrlParams.set("p", shownPhoto.name);
+    } else {
+      UrlParams.remove("p");
+    }
+  }, [shownPhoto, isInitialized]);
+
+  useEffect(() => {
+    const cleanup = UrlParams.onChange(() => {
+      const photoParam = UrlParams.get("p");
+      if (photoParam && photos.length > 0) {
+        const photo = photos.find((p) => p.name === photoParam);
+        if (photo) {
+          setShownPhoto(photo);
+        } else {
+          setShownPhoto(undefined);
+        }
+      } else {
+        setShownPhoto(undefined);
+      }
+    });
+    return cleanup;
+  }, [photos]);
 
   useEffect(() => {
     setTimeout(() => fetchPhotos(), 1000);
@@ -70,7 +111,6 @@ export const PhotoProvider = ({ children }: { children: ReactNode }) => {
   );
 };
 
-// Custom hook for easy use
 export const usePhotos = () => {
   const context = useContext(PhotoContext);
   if (!context) {

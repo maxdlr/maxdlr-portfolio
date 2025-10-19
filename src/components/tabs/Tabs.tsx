@@ -1,7 +1,8 @@
 "use client";
-import { useRouter } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 import Button from "../Button/Button";
 import { useTabs, Tab } from "@/components/tabs/TabsContext";
+import { useEffect } from "react";
 
 const Tabs = () => {
   const router = useRouter();

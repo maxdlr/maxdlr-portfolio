@@ -17,8 +17,8 @@ export default function RootLayout({
       <body className={`${geistSans.className} antialiased mt-8 mx-6 sm:mx-20`}>
         <TabsProvider>
           <Tabs />
+          <PhotoProvider>{children}</PhotoProvider>
         </TabsProvider>
-        <PhotoProvider>{children}</PhotoProvider>
       </body>
     </html>
   );

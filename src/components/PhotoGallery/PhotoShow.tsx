@@ -2,6 +2,7 @@ import { Photo } from "@/app/api/photos/route";
 import { AnimatePresence, motion } from "framer-motion";
 import Image from "next/image";
 import { usePhotos } from "./PhotosContext";
+import { useEffect } from "react";
 
 interface PhotoShowProps {
   photo?: Photo;
@@ -9,20 +10,41 @@ interface PhotoShowProps {
 
 const PhotoShow = ({ photo }: PhotoShowProps) => {
   const { setShownPhoto } = usePhotos();
+
   const handleClickCapture = (event: any) => {
     const isClickOutside = !!event.target.attributes["data-click-out"];
-    if (isClickOutside) return setShownPhoto(undefined);
+    if (isClickOutside) {
+      setShownPhoto(undefined);
+    }
   };
+
+  useEffect(() => {
+    const handleKeyDown = (event: KeyboardEvent) => {
+      if (event.key === "Escape") {
+        setShownPhoto(undefined);
+      }
+    };
+
+    if (photo) {
+      window.addEventListener("keydown", handleKeyDown);
+    }
+
+    return () => {
+      window.removeEventListener("keydown", handleKeyDown);
+    };
+  }, [photo, setShownPhoto]);
+
   return (
     photo && (
-      <div className="fixed top-0 left-0 origin-center w-full h-full">
+      <div className="fixed top-0 left-0 origin-center w-full h-full transition-all backdrop-blur-2xl backdrop-brightness-50 z-20">
         <div
           data-click-out
-          className="flex justify-center items-center h-full p-10"
+          className="flex justify-center items-center h-full p-4 md:p-10"
           onClick={handleClickCapture}
         >
           <AnimatePresence mode="wait">
             <motion.div
+              key={photo.name}
               initial={{
                 opacity: 0,
                 y: "100px",
@@ -47,11 +69,11 @@ const PhotoShow = ({ photo }: PhotoShowProps) => {
             >
               <Image
                 data-click-in
-                src={photo?.path}
+                src={photo.path}
                 alt={photo.alt}
                 width={1000}
                 height={1000}
-                className="rounded-2xl"
+                className="rounded-2xl max-h-[90svh] w-auto"
               />
             </motion.div>
           </AnimatePresence>
@@ -60,4 +82,5 @@ const PhotoShow = ({ photo }: PhotoShowProps) => {
     )
   );
 };
+
 export default PhotoShow;

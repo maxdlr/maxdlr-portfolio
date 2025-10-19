@@ -1,6 +1,5 @@
 "use client";
 
-import { usePathname } from "next/navigation";
 import {
   createContext,
   Dispatch,
@@ -20,6 +19,7 @@ import {
   TriangleFill,
   TriangleStroke,
 } from "../icons/Icons";
+import { useParams, usePathname } from "next/navigation";
 
 export interface Tab {
   label: string;
@@ -66,14 +66,17 @@ const TabContext = createContext<TabContextType | undefined>(undefined);
 
 export const TabsProvider = ({ children }: { children: ReactNode }) => {
   const [tab, setTab] = useState<Tab>(tabs.home);
-  const pathName = usePathname();
+  const pathname = usePathname();
+  const { category } = useParams();
 
   useEffect(() => {
-    const tab: Tab | undefined = Object.values(tabs).find(
-      (tab: Tab) => tab.uri === pathName,
-    );
-    if (tab && pathName.includes(tab.uri)) setTab(tab || tabs.home);
-  }, [pathName]);
+    const foundUri = pathname.replace(`/${category as string}`, "");
+    if (category || foundUri !== tab.uri) {
+      setTab(
+        Object.values(tabs).find((t: Tab) => t.uri === foundUri) || tabs.home,
+      );
+    }
+  });
 
   return (
     <TabContext.Provider

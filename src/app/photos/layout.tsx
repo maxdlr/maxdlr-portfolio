@@ -9,7 +9,6 @@ export default function PhotosLayout({
   children: React.ReactNode;
 }>) {
   const { categories, category, loading } = usePhotos();
-
   return (
     <div>
       <div className="flex justify-center items-center gap-2 mb-4 text-center">

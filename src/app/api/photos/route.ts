@@ -2,6 +2,7 @@ import { readdir } from "fs/promises";
 import path from "path";
 
 export interface Photo {
+  name: string;
   path: string;
   category: string;
   alt: string;
@@ -18,6 +19,7 @@ export async function GET() {
     const match = file.match(regex);
     if (match) {
       photoCollection.push({
+        name: file,
         path: "/photo-collections/" + file,
         category: match[1],
         alt: match[1],
