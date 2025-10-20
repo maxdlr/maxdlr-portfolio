@@ -27,11 +27,11 @@ const Tabs = () => {
     />
   );
   return (
-    <div className="flex justify-center items-center gap-3 text-center mb-10">
+    <nav className="flex justify-center items-center gap-3 text-center h-[10svh] min-h-20">
       {Object.values(tabs).map((tab: Tab) => (
         <div key={tab.label}>{Tab(tab)}</div>
       ))}
-    </div>
+    </nav>
   );
 };
 export default Tabs;
