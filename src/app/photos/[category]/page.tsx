@@ -3,10 +3,10 @@ import { Photo } from "@/app/api/photos/route";
 import PhotoGallery from "@/components/PhotoGallery/PhotoGallery";
 import { useParams } from "next/navigation";
 import { useEffect } from "react";
-import { usePhotos } from "../../../components/PhotoGallery/PhotosContext";
+import { usePhotos } from "../../../providers/PhotoProvider";
 
 const PhotosByCategory = () => {
-  const { setCategory, photos, loading, setShownPhoto } = usePhotos();
+  const { setCategory, photos, loading } = usePhotos();
   const { category } = useParams();
   useEffect(() => setCategory(category as string));
 

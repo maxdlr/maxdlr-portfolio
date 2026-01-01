@@ -1,7 +1,7 @@
 import { Photo } from "@/app/api/photos/route";
 import { AnimatePresence, motion } from "framer-motion";
 import Image from "next/image";
-import { usePhotos } from "./PhotosContext";
+import { usePhotos } from "../../providers/PhotoProvider";
 import { useEffect } from "react";
 
 interface PhotoShowProps {

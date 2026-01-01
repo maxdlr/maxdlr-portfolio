@@ -15,6 +15,11 @@ import {
   CameraStroke,
   HouseFill,
   HouseStroke,
+  JournalFill,
+  JournalStroke,
+  KeyboardFill,
+  KeyboardStroke,
+  TagFill,
   TagStroke,
   TriangleFill,
   TriangleStroke,
@@ -45,14 +50,23 @@ const tabs: Tabs = {
   },
   dev: {
     label: "Dev",
-    uri: "https://github.com/maxdlr",
-    icons: { off: TagStroke },
-    target: "_blank",
+    uri: "/dev",
+    icons: { off: TagStroke, on: TagFill },
   },
   photos: {
     label: "Photos",
     uri: "/photos",
     icons: { on: CameraFill, off: CameraStroke },
+  },
+  blog: {
+    label: "Blog",
+    uri: "/blog",
+    icons: { on: JournalFill, off: JournalStroke },
+  },
+  keyboard: {
+    label: "Keyboard",
+    uri: "/keyboard",
+    icons: { on: KeyboardFill, off: KeyboardStroke },
   },
 };
 

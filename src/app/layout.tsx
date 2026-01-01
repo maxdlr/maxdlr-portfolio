@@ -1,11 +1,11 @@
 "use client";
 import Tabs from "@/components/tabs/Tabs";
-import { Anton } from "next/font/google";
-import { PhotoProvider } from "../components/PhotoGallery/PhotosContext";
+import { Anton, Averia_Sans_Libre } from "next/font/google";
 import "./globals.css";
 import { TabsProvider } from "@/components/tabs/TabsContext";
+import { PhotoProvider } from "@/providers/PhotoProvider";
 
-const geistSans = Anton({ weight: "400" });
+const font = Averia_Sans_Libre({ weight: "400" });
 
 export default function RootLayout({
   children,
@@ -13,8 +13,8 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en">
-      <body className={`${geistSans.className} antialiased mt-8 mx-6 sm:mx-20`}>
+    <html lang="en" suppressHydrationWarning data-lt-installed>
+      <body className={`${font.className} antialiased mt-8 mx-6 sm:mx-20`}>
         <TabsProvider>
           <Tabs />
           <PhotoProvider>{children}</PhotoProvider>

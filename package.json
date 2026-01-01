@@ -10,6 +10,8 @@
     "format": "biome format --write"
   },
   "dependencies": {
+    "@rive-app/react-canvas": "^4.24.0",
+    "lucide-react": "^0.562.0",
     "motion": "^12.23.24",
     "next": "15.5.4",
     "react": "19.1.0",

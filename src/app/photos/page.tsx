@@ -1,7 +1,7 @@
 "use client";
 import PhotoGallery from "@/components/PhotoGallery/PhotoGallery";
 import { useEffect } from "react";
-import { usePhotos } from "../../components/PhotoGallery/PhotosContext";
+import { usePhotos } from "../../providers/PhotoProvider";
 
 const PhotosDefault = () => {
   const { setCategory, photos, loading } = usePhotos();

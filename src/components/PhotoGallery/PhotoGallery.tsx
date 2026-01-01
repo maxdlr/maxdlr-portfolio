@@ -6,8 +6,9 @@ import Image from "next/image";
 import { ReactElement } from "react";
 import useBreakpoint from "use-breakpoint";
 import Loading from "../loading/Loading";
-import { usePhotos } from "./PhotosContext";
+import { usePhotos } from "../../providers/PhotoProvider";
 import PhotoShow from "./PhotoShow";
+import { BREAKPOINTS } from "@/services/constants";
 
 export interface PhotoProps {
   photos: Photo[];
@@ -17,14 +18,6 @@ export interface PhotoProps {
 const PhotoGallery = ({ photos, loading }: PhotoProps) => {
   const { shownPhoto, setShownPhoto } = usePhotos();
 
-  const BREAKPOINTS = {
-    base: 0,
-    sm: 640,
-    md: 768,
-    lg: 1024,
-    xl: 1280,
-    "2xl": 1536,
-  };
   const { breakpoint } = useBreakpoint(BREAKPOINTS);
 
   const photoElements = photos.map(

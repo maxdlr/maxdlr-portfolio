@@ -1,12 +1,13 @@
 "use client";
 import Button from "@/components/Button/Button";
 import { upperFirst } from "@/services/helpers";
-import { usePhotos } from "../../components/PhotoGallery/PhotosContext";
+import { usePhotos } from "../../providers/PhotoProvider";
+import { ReactNode } from "react";
 
 export default function PhotosLayout({
   children,
 }: Readonly<{
-  children: React.ReactNode;
+  children: ReactNode;
 }>) {
   const { categories, category, loading } = usePhotos();
   return (
