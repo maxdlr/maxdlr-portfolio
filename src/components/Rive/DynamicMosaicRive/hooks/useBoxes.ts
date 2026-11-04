@@ -4,6 +4,7 @@ export interface BoxState {
   index: number;
   isLight: boolean;
   isRound: boolean;
+  type?: "square" | "round" | "triangle";
 }
 
 const generateBoxes = (
@@ -17,15 +18,15 @@ const generateBoxes = (
     isRound,
   }));
 
-const useBoxes = () => {
-  const [count, setCount] = useState(50);
+const useBoxes = (defaultCount: number) => {
+  const [count, setCount] = useState(defaultCount);
   const [boxes, setBoxes] = useState<BoxState[]>(generateBoxes(count));
 
   useEffect(() => {
     setBoxes(generateBoxes(count));
   }, [count]);
 
-  const toggleAllLight = () => {
+  const toggleLightAll = () => {
     setBoxes((boxes) =>
       boxes.map((box) => ({
         ...box,
@@ -43,11 +44,11 @@ const useBoxes = () => {
     );
   };
 
-  const toggleAllRound = () => {
+  const setShape = (shape: BoxState["type"]) => {
     setBoxes((boxes) =>
       boxes.map((box) => ({
         ...box,
-        isRound: !box.isRound,
+        type: shape,
       })),
     );
   };
@@ -58,14 +59,38 @@ const useBoxes = () => {
     );
   };
 
+  const make = (type: "space-invader" | "checker" = "space-invader") => {
+    let changedBoxes = [];
+    if (type === "space-invader") {
+      changedBoxes = [0, 1];
+      changedBoxes.forEach((i) => {
+        updateBoxByIndex(i, (box) => ({ ...box, isLight: true }));
+      });
+    }
+    if (type === "checker") {
+      changedBoxes = Array.from({ length: count }).map((_, i) => i);
+      changedBoxes
+        .filter((v) => v % 2 === 0)
+        .forEach((i) => {
+          updateBoxByIndex(i, (box) => ({ ...box, isLight: true }));
+        });
+      changedBoxes
+        .filter((v) => v % 2 !== 0)
+        .forEach((i) => {
+          updateBoxByIndex(i, (box) => ({ ...box, isLight: false }));
+        });
+    }
+  };
+
   return {
     boxes,
     count,
     setCount,
-    toggleAllLight,
+    toggleLightAll,
     updateBoxByIndex,
-    toggleAllRound,
+    setShape,
     setAllLight,
+    make,
   };
 };
 

@@ -1,15 +1,14 @@
 "use client";
 
 import Link from "next/link";
-import { ProjectsMap } from "./hooks/useDevProjects";
-
+const Projects = ["dynamic-mosaic", "tictactoe"];
 const Dev = () => {
   return (
     <>
-      {Object.keys(ProjectsMap).map((p, i) => (
+      {Projects.map((p, i) => (
         <div key={i}>
           <Link key={i} href={`/dev/${p}`}>
-            {p !== "none" && p}
+            {p && p}
           </Link>
         </div>
       ))}

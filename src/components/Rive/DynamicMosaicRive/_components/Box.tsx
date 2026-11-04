@@ -6,16 +6,18 @@ import {
   useViewModelInstanceTrigger,
 } from "@rive-app/react-canvas";
 import { useEffect } from "react";
-import { BoxState } from "../hooks/useBoxes";
 import { fileConstants } from "../DynamicMosaicRive";
+import { BoxState } from "../hooks/useBoxes";
 
 export interface BoxProps extends BoxState {
   className?: string;
   updateBoxByIndex: (index: number, fn: (box: BoxState) => BoxState) => void;
+  size?: number;
 }
 
 const Box = ({
-  className = "w-[5rem] h-[5rem]",
+  className,
+  size = 50,
   index,
   isLight,
   isRound,
@@ -58,7 +60,12 @@ const Box = ({
     },
   });
 
-  return <RiveComponent className={className} />;
+  return (
+    <RiveComponent
+      className={className}
+      style={{ width: size, height: size }}
+    />
+  );
 };
 
 export default Box;

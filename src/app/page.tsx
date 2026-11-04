@@ -39,9 +39,10 @@ const Home = () => {
       className={`${className} h-[80svh] grid-cols-2 lg:grid-rows-5 gap-2`}
     >
       <HomeTitle className={`${classes}`} />
-      <HomeWhatIDid className={`${classes} row-span-3`} />
-      <HomeSocials className={`${classes}`} />
+      <HomeIllustration className={`${classes}`} />
       <HomeTechStack className={`${classes} row-span-2`} />
+      <HomeSocials className={`${classes}`} />
+      <HomeWhatIDid className={`${classes} row-span-3`} />
       <HomeIllustration className={`${classes}`} />
       <HomeLinks className={`${classes}`} />
     </section>
@@ -52,12 +53,11 @@ const Home = () => {
       className={`${className} h-[170svh] grid-cols-2 lg:grid-rows-5 gap-2`}
     >
       <HomeTitle className={`${classes} col-span-2`} />
-      <HomeSocials className={`${classes}`} />
-      <HomeLinks className={`${classes}`} />
+      <HomeSocials className={`${classes} col-span-2`} />
+      <HomeLinks className={`${classes} col-span-2`} />
       <HomeWhatIDid className={`${classes} row-span-2 col-span-2`} />
-      <HomeIllustration className={`${classes}`} />
-      <HomeIllustration className={`${classes}`} />
       <HomeTechStack className={`${classes} row-span-2 col-span-2`} />
+      <HomeIllustration className={`${classes} col-span-2`} />
     </section>
   );
 

@@ -1,15 +1,20 @@
 "use client";
+import DynamicMosaicRive from "@/components/Rive/DynamicMosaicRive/DynamicMosaicRive";
 import useDevProjects from "../hooks/useDevProjects";
+import Tictactoe from "@/components/Rive/Tictactoe/TictactoeRive";
 
 const DevProjetPage = () => {
-  const { ProjectsComponent } = useDevProjects();
+  const { currentProject } = useDevProjects();
 
-  if (!ProjectsComponent) {
+  if (!currentProject) {
     return "loading";
   }
   return (
     <div className="flex justify-center items-center">
-      <ProjectsComponent menu />
+      {currentProject === "dynamic-mosaic" && (
+        <DynamicMosaicRive menu white={false} />
+      )}
+      {currentProject === "tictactoe" && <Tictactoe />}
     </div>
   );
 };

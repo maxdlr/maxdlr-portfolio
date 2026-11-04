@@ -12,11 +12,13 @@ interface ButtonProps {
   label: string;
   onClick?: () => void;
   onIsHovering?: () => void;
+  size?: { width?: number; height?: number };
 }
 
 const RiveButton = ({
   className,
   label,
+  size = { width: 120, height: 70 },
   onClick,
   onIsHovering,
 }: ButtonProps) => {
@@ -49,7 +51,7 @@ const RiveButton = ({
     if (onIsHovering && isHovering) onIsHovering();
   }, [isHovering, onIsHovering]);
 
-  return <RiveComponent className={className} />;
+  return label && <RiveComponent style={size} />;
 };
 
 export default RiveButton;

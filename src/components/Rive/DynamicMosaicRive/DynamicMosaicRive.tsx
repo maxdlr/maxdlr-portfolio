@@ -13,80 +13,102 @@ export const fileConstants = {
 };
 
 interface DynamicMosaicRiveProps {
-  responsive?: boolean;
   menu?: boolean;
-  boxCount?: number;
   white?: boolean;
+  boxCount?: number;
   bgClass?: string;
 }
 
+const CountStepperWrap = ({
+  className,
+  count,
+  setCount,
+  max = 100,
+}: {
+  className?: string;
+  count: number;
+  setCount: (count: number) => void;
+  max?: number;
+}) => (
+  <div className={`max-sm:mb-5 justify-center items-center ${className}`}>
+    <CountStepper value={count} min={1} max={max} onChange={setCount} />
+  </div>
+);
+
+const RiveButtonWrap = ({
+  className = "",
+  label,
+  onClick,
+}: {
+  className?: string;
+  label: string;
+  onClick: () => void;
+}) => (
+  <div className={`w-fit h-fit ${className}`}>
+    <RiveButton
+      label={label}
+      onClick={onClick}
+      size={{ width: 120, height: 50 }}
+    />
+  </div>
+);
+
 const DynamicMosaicRive = ({
-  responsive = true,
   menu = false,
-  boxCount,
   white = false,
-  bgClass,
+  boxCount,
+  bgClass = "bg-gray-500",
 }: DynamicMosaicRiveProps) => {
   const {
     boxes,
-    count,
-    toggleAllLight,
-    toggleAllRound,
-    setCount,
+    setShape,
     updateBoxByIndex,
+    setCount,
+    count,
+    toggleLightAll,
     setAllLight,
-  } = useBoxes();
-
-  useEffect(() => setAllLight(white), [white]);
-
+    make,
+  } = useBoxes(20);
   useEffect(() => {
     if (boxCount) setCount(boxCount);
+  }, [boxCount]);
+  useEffect(() => {
+    if (white) {
+      setAllLight(white);
+    }
   }, [boxCount]);
 
   return (
     <section>
       {menu && (
-        <div className="w-full flex flex-wrap justify-center items-center gap-4">
-          <div className="w-fit h-fit">
-            <RiveButton
-              label="Rounds"
-              onClick={toggleAllRound}
-              className="w-[120px] h-[70px]"
-            />
+        <div className="w-full grid grid-cols-3 sm:grid-cols-6">
+          <div className="col-span-full mx-auto">
+            <CountStepperWrap count={count} setCount={setCount} max={count} />
           </div>
-          <div className="h-[70px] sm:flex justify-center items-center hidden">
-            <CountStepper value={count} min={1} max={100} onChange={setCount} />
-          </div>
-          <div className="w-fit h-fit">
-            <RiveButton
-              label="Invert"
-              onClick={toggleAllLight}
-              className="w-[120px] h-[70px]"
-            />
-          </div>
-          <div className="h-[70px] justify-center items-center flex sm:hidden">
-            <CountStepper value={count} min={1} max={100} onChange={setCount} />
-          </div>
+          <RiveButtonWrap label="Rounds" onClick={() => setShape("round")} />
+          <RiveButtonWrap
+            label="Triangles"
+            onClick={() => setShape("triangle")}
+          />
+          <RiveButtonWrap label="Squares" onClick={() => setShape("square")} />
+          <RiveButtonWrap label="Invert" onClick={toggleLightAll} />
+          <RiveButtonWrap label="Dark" onClick={() => setAllLight(false)} />
+          <RiveButtonWrap label="Light" onClick={() => setAllLight(true)} />
+          <RiveButtonWrap label="Checker" onClick={() => make("checker")} />
         </div>
       )}
-
-      {responsive ? (
-        <div
-          className={`flex flex-wrap justify-center items-center mx-auto w-[20rem] sm:w-[35rem] md:w-[45rem] lg:w-[50rem] ${bgClass ?? "bg-white"} rounded-lg`}
-        >
-          {boxes.map((box) => (
-            <Box key={box.index} {...box} updateBoxByIndex={updateBoxByIndex} />
-          ))}
-        </div>
-      ) : (
-        <div
-          className={`flex flex-wrap w-full h-full ${bgClass ?? "bg-white"} rounded-lg`}
-        >
-          {boxes.map((box) => (
-            <Box key={box.index} {...box} updateBoxByIndex={updateBoxByIndex} />
-          ))}
-        </div>
-      )}
+      <div
+        className={`flex flex-wrap justify-center items-center mx-auto w-[20rem] sm:w-[35rem] md:w-[45rem] lg:w-[50rem] ${bgClass} rounded-lg`}
+      >
+        {boxes.map((box) => (
+          <Box
+            key={box.index}
+            {...box}
+            updateBoxByIndex={updateBoxByIndex}
+            size={20}
+          />
+        ))}
+      </div>
     </section>
   );
 };
